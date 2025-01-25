@@ -15,7 +15,8 @@ const ProductList = () => {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-        setProducts(data)
+        console.log('API Response:', data)
+        setProducts(data.products)
       } catch (error) {
         console.error('Error fetching products:', error)
         setError('Failed to load products. Please try again later.')
