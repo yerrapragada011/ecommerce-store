@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
+// import { useHistory } from 'react-router-dom'
 
-const ProductList = () => {
+const ProductList = ({ addToBag }) => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -8,14 +9,11 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          'http://localhost:8000/api/shopify/products'
-        )
+        const response = await fetch('http://localhost:8000/api/shopify/products')
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-        console.log('API Response:', data)
         setProducts(data.products)
       } catch (error) {
         console.error('Error fetching products:', error)
@@ -51,21 +49,15 @@ const ProductList = () => {
           >
             <img src={product.image?.src} alt={product.title} width="100%" />
             <h2>{product.title}</h2>
-            <p dangerouslySetInnerHTML={{ __html: product.body_html }} />
             <p>${product.variants[0].price}</p>
-            <button onClick={() => handleBuyNow(product.variants[0].id)}>
-              Buy Now
+            <button onClick={() => addToBag(product)}>
+              Add to Bag
             </button>
           </div>
         ))}
       </div>
     </div>
   )
-}
-
-const handleBuyNow = (variantId) => {
-  const checkoutUrl = `https://${process.env.REACT_APP_SHOPIFY_STORE_NAME}/cart/${variantId}:1`
-  window.location.href = checkoutUrl
 }
 
 export default ProductList
