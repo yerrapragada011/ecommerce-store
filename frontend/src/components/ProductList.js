@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
-// import { useHistory } from 'react-router-dom'
 
 const ProductList = ({ addToBag }) => {
   const [products, setProducts] = useState([])
+  const [quantities, setQuantities] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/shopify/products')
+        const response = await fetch(
+          'http://localhost:8000/api/shopify/products'
+        )
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
@@ -25,6 +27,21 @@ const ProductList = ({ addToBag }) => {
 
     fetchProducts()
   }, [])
+
+  const handleQuantityChange = (id, value) => {
+    if (/^\d*$/.test(value)) {
+      setQuantities((prev) => ({
+        ...prev,
+        [id]: value === '' ? '' : parseInt(value, 10),
+      }))
+    }
+  }
+
+  const handleAddToBag = (product) => {
+    const quantity = quantities[product.id] > 0 ? quantities[product.id] : 1
+    addToBag(product, quantity)
+    setQuantities((prev) => ({ ...prev, [product.id]: 1 }))
+  }
 
   if (loading) {
     return <p>Loading products...</p>
@@ -50,9 +67,23 @@ const ProductList = ({ addToBag }) => {
             <img src={product.image?.src} alt={product.title} width="100%" />
             <h2>{product.title}</h2>
             <p>${product.variants[0].price}</p>
-            <button onClick={() => addToBag(product)}>
-              Add to Bag
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <input
+                type="text"
+                placeholder="Quantity"
+                value={quantities[product.id] ?? 1}
+                onChange={(e) =>
+                  handleQuantityChange(product.id, e.target.value)
+                }
+                style={{
+                  width: '60px',
+                  textAlign: 'center',
+                }}
+              />
+              <button onClick={() => handleAddToBag(product)}>
+                Add to Bag
+              </button>
+            </div>
           </div>
         ))}
       </div>

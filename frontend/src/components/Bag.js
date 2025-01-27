@@ -1,6 +1,11 @@
 import React from 'react'
 
-const Bag = ({ items, removeFromBag }) => {
+const Bag = ({ items, updateQuantity, removeFromBag }) => {
+  const totalPrice = items.reduce(
+    (sum, item) => sum + item.variants[0].price * item.quantity,
+    0
+  )
+
   return (
     <div>
       <h1>Your Bag</h1>
@@ -12,10 +17,23 @@ const Bag = ({ items, removeFromBag }) => {
             {items.map((item, index) => (
               <div key={index} style={{ marginBottom: '20px' }}>
                 <h3>{item.title}</h3>
-                <p>${item.variants[0].price}</p>
+                <p>Price: ${item.variants[0].price}</p>
+                <p>Quantity: {item.quantity}</p>
+                <button
+                  onClick={() => updateQuantity(index, item.quantity - 1)}
+                  disabled={item.quantity === 1}
+                >
+                  -
+                </button>
+                <button
+                  onClick={() => updateQuantity(index, item.quantity + 1)}
+                >
+                  +
+                </button>
                 <button onClick={() => removeFromBag(index)}>Remove</button>
               </div>
             ))}
+            <h2>Total: ${totalPrice.toFixed(2)}</h2>
           </div>
         )}
       </div>
