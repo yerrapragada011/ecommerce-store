@@ -11,7 +11,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const proceedToCheckout = async () => {
     try {
       const lineItems = items.map((item) => ({
-        variant_id: item.variants[0].id,
+        variant_id: item.variants.edges[0]?.node.id,
         quantity: item.quantity,
       }))
 
@@ -28,7 +28,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
       if (response.ok) {
         const data = await response.json()
-        window.location.href = data.checkoutUrl
+        window.open(data.checkoutUrl, '_blank')
       } else {
         console.error('Failed to create checkout session')
         alert('Failed to proceed to checkout. Please try again.')

@@ -7,25 +7,25 @@ const getProducts = async (req, res) => {
     const client = getGraphqlClient(shop)
 
     const query = `
-        query {
-          products(first: 10) {
-            edges {
-              node {
-                id
-                title
-                variants(first: 5) {
-                  edges {
-                    node {
-                      id
-                      price
-                    }
+      query {
+        products(first: 10) {
+          edges {
+            node {
+              id
+              title
+              variants(first: 5) {
+                edges {
+                  node {
+                    id
+                    price
                   }
                 }
               }
             }
           }
         }
-      `
+      }
+    `
 
     const response = await client.request(query)
 
@@ -42,32 +42,31 @@ const getProducts = async (req, res) => {
 }
 
 const createCheckout = async (req, res) => {
-  const { lineItems, email } = req.body
+  const { lineItems } = req.body
 
   try {
     const shop = process.env.SHOPIFY_STORE_URL
-    const accessToken = process.env.SHOPIFY_ACCESS_TOKEN
-
-    if (!shop || !accessToken) {
-      return res
-        .status(500)
-        .json({ error: 'Shop or Access Token is not configured.' })
-    }
+    const client = getGraphqlClient(shop)
 
     const query = `
         mutation {
-          checkoutCreate(input: {
-            email: "${email}",
-            lineItems: ${JSON.stringify(
-              lineItems.map((item) => ({
-                variantId: item.variantId,
-                quantity: item.quantity,
-              }))
-            )}
+          draftOrderCreate(input: {
+            lineItems: [
+              ${lineItems
+                .map(
+                  (item) => `
+                    {
+                      variantId: "${item.variant_id}",
+                      quantity: ${item.quantity}
+                    }
+                  `
+                )
+                .join(',')}
+            ]
           }) {
-            checkout {
+            draftOrder {
               id
-              webUrl
+              invoiceUrl
             }
             userErrors {
               field
@@ -77,19 +76,18 @@ const createCheckout = async (req, res) => {
         }
       `
 
-    // Make the GraphQL request to create the checkout
-    const response = await graphqlClient.query({ data: { query } })
+    const response = await client.request(query)
 
-    if (response.errors) {
+    if (response && response.errors) {
       throw new Error(`GraphQL Error: ${response.errors[0].message}`)
     }
 
-    const checkoutUrl = response.data.checkoutCreate.checkout.webUrl
-
-    res.status(201).json({ checkoutUrl })
+    res.status(201).json({
+      checkoutUrl: response.data.draftOrderCreate.draftOrder.invoiceUrl,
+    })
   } catch (error) {
-    console.error('Error creating checkout:', error)
-    res.status(500).json({ error: 'Failed to create checkout session.' })
+    console.error('Error creating draft order:', error)
+    res.status(500).json({ error: 'Failed to create draft order.' })
   }
 }
 
