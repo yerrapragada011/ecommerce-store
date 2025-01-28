@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import ProductList from './components/ProductList'
 import Bag from './components/Bag'
 
@@ -45,15 +46,28 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h1>Welcome to the React App!</h1>
-      <ProductList addToBag={addToBag} bagItems={bagItems} />
-      <Bag
-        items={bagItems}
-        updateQuantity={updateQuantity}
-        removeFromBag={removeFromBag}
-      />
-    </div>
+    <Router>
+      <nav style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+        <Link to="/">Home</Link>
+        <Link to="/bag">Bag</Link>
+      </nav>
+      <Routes>
+        <Route
+          path="/"
+          element={<ProductList addToBag={addToBag} bagItems={bagItems} />}
+        />
+        <Route
+          path="/bag"
+          element={
+            <Bag
+              items={bagItems}
+              updateQuantity={updateQuantity}
+              removeFromBag={removeFromBag}
+            />
+          }
+        />
+      </Routes>
+    </Router>
   )
 }
 
