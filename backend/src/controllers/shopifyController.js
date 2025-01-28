@@ -30,7 +30,6 @@ const getProducts = async (req, res) => {
     const response = await client.request(query)
 
     if (response && response.body && response.body.errors) {
-      console.error('GraphQL errors:', response.body.errors)
       throw new Error(`GraphQL Error: ${response.body.errors[0].message}`)
     }
 

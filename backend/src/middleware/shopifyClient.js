@@ -26,14 +26,12 @@ const getSession = (shop) => {
   return session
 }
 
-// Get GraphQL client using the correct method
 const getGraphqlClient = (shop) => {
   const session = getSession(shop)
   if (!session) {
     throw new Error('Session not found')
   }
 
-  // Use the clients property to get the GraphQL client
   const graphqlClient = new shopify.clients.Graphql({ session })
   return graphqlClient
 }
