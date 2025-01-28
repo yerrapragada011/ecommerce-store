@@ -1,58 +1,97 @@
 require('dotenv').config()
-const { getSession, shopify } = require('../middleware/shopifyClient')
+const { getGraphqlClient } = require('../middleware/shopifyClient')
 
 const getProducts = async (req, res) => {
   try {
     const shop = process.env.SHOPIFY_STORE_URL
+    const client = getGraphqlClient(shop)
 
-    const session = getSession(shop)
-    if (!session) {
-      console.error('Failed to retrieve session')
-      return res.status(500).json({ error: 'Session retrieval failed.' })
+    const query = `
+        query {
+          products(first: 10) {
+            edges {
+              node {
+                id
+                title
+                variants(first: 5) {
+                  edges {
+                    node {
+                      id
+                      price
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+
+    const response = await client.request(query)
+
+    if (response && response.body && response.body.errors) {
+      console.error('GraphQL errors:', response.body.errors)
+      throw new Error(`GraphQL Error: ${response.body.errors[0].message}`)
     }
 
-    const products = await shopify.rest.Product.all({ session })
-
-    if (Array.isArray(products.data)) {
-      return res.json({ products: products.data })
-    } else {
-      throw new Error('Products is not an array')
-    }
+    const products = response.data.products.edges.map((edge) => edge.node)
+    return res.json({ products })
   } catch (error) {
     console.error('Error fetching products:', error)
     res.status(500).json({ error: 'Failed to fetch products.' })
   }
 }
 
-const createOrder = async (req, res) => {
-  const { lineItems, email, shippingAddress } = req.body
+const createCheckout = async (req, res) => {
+  const { lineItems, email } = req.body
 
   try {
     const shop = process.env.SHOPIFY_STORE_URL
+    const accessToken = process.env.SHOPIFY_ACCESS_TOKEN
 
-    const session = getSession(shop)
-
-    if (!session) {
-      console.error('Failed to retrieve session')
-      return res.status(500).json({ error: 'Session retrieval failed.' })
+    if (!shop || !accessToken) {
+      return res
+        .status(500)
+        .json({ error: 'Shop or Access Token is not configured.' })
     }
 
-    const orderData = {
-      line_items: lineItems,
-      email,
-      shipping_address: shippingAddress,
+    const query = `
+        mutation {
+          checkoutCreate(input: {
+            email: "${email}",
+            lineItems: ${JSON.stringify(
+              lineItems.map((item) => ({
+                variantId: item.variantId,
+                quantity: item.quantity,
+              }))
+            )}
+          }) {
+            checkout {
+              id
+              webUrl
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `
+
+    // Make the GraphQL request to create the checkout
+    const response = await graphqlClient.query({ data: { query } })
+
+    if (response.errors) {
+      throw new Error(`GraphQL Error: ${response.errors[0].message}`)
     }
 
-    const response = await shopify.rest.Order.create({
-      session,
-      body: { order: orderData },
-    })
+    const checkoutUrl = response.data.checkoutCreate.checkout.webUrl
 
-    res.status(201).json(response.data)
+    res.status(201).json({ checkoutUrl })
   } catch (error) {
-    console.error('Error creating order:', error)
-    res.status(500).json({ error: 'Failed to create order.' })
+    console.error('Error creating checkout:', error)
+    res.status(500).json({ error: 'Failed to create checkout session.' })
   }
 }
 
-module.exports = { getProducts, createOrder }
+module.exports = { getProducts, createCheckout }

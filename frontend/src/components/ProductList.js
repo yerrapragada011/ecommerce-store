@@ -66,7 +66,7 @@ const ProductList = ({ addToBag }) => {
           >
             <img src={product.image?.src} alt={product.title} width="100%" />
             <h2>{product.title}</h2>
-            <p>${product.variants[0].price}</p>
+            <p>${product.variants.edges[0]?.node.price}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <input
                 type="text"

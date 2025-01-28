@@ -1,7 +1,6 @@
 require('dotenv').config()
 const { shopifyApi } = require('@shopify/shopify-api')
 const { NodeAdapter } = require('@shopify/shopify-api/adapters/node')
-const { restResources } = require('@shopify/shopify-api/rest/admin/2025-01')
 
 const shopify = shopifyApi({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -12,7 +11,6 @@ const shopify = shopifyApi({
   apiVersion: '2025-01',
   isPrivateApp: true,
   adapter: NodeAdapter,
-  restResources: restResources,
 })
 
 const getSession = (shop) => {
@@ -28,4 +26,16 @@ const getSession = (shop) => {
   return session
 }
 
-module.exports = { shopify, getSession }
+// Get GraphQL client using the correct method
+const getGraphqlClient = (shop) => {
+  const session = getSession(shop)
+  if (!session) {
+    throw new Error('Session not found')
+  }
+
+  // Use the clients property to get the GraphQL client
+  const graphqlClient = new shopify.clients.Graphql({ session })
+  return graphqlClient
+}
+
+module.exports = { shopify, getSession, getGraphqlClient }
