@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import ProductList from './components/ProductList'
 import Bag from './components/Bag'
+import './App.css'
 
 const App = () => {
   const [bagItems, setBagItems] = useState([])
@@ -47,7 +48,7 @@ const App = () => {
 
   return (
     <Router>
-      <nav style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+      <nav className='nav'>
         <Link to="/">Home</Link>
         <Link to="/bag">Bag</Link>
       </nav>

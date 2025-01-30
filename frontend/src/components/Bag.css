@@ -1,0 +1,13 @@
+.bag-item {
+  margin-bottom: 20px;
+}
+
+.checkout-button {
+  margin-top: 20px;
+}
+
+.bag-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

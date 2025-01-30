@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import './ProductList.css'
 
 const ProductList = ({ addToBag }) => {
   const [products, setProducts] = useState([])
@@ -45,7 +46,7 @@ const ProductList = ({ addToBag }) => {
   }
 
   if (loading) {
-    return <p>Loading products...</p>
+    return <p className="loading">Loading products...</p>
   }
 
   if (error) {
@@ -54,40 +55,30 @@ const ProductList = ({ addToBag }) => {
 
   return (
     <div>
-      <h1>Products</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+      <div className="product-list">
         {products.map((product) => (
-          <div
-            key={product.id}
-            style={{
-              border: '1px solid #ccc',
-              padding: '10px',
-              width: '200px',
-            }}
-          >
+          <div key={product.id} className="product-card">
             <img
               src={product.images?.edges[0]?.node?.src}
               alt={product.title}
-              width="100%"
             />
-            <h2>{product.title}</h2>
-            <p>${product.variants.edges[0]?.node.price}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <input
-                type="text"
-                placeholder="Quantity"
-                value={quantities[product.id] ?? 1}
-                onChange={(e) =>
-                  handleQuantityChange(product.id, e.target.value)
-                }
-                style={{
-                  width: '60px',
-                  textAlign: 'center',
-                }}
-              />
-              <button onClick={() => handleAddToBag(product)}>
-                Add to Bag
-              </button>
+            <div className="product-info">
+              <h2>{product.title}</h2>
+              <p>${product.variants.edges[0]?.node.price}</p>
+              <div className="product-actions">
+                <input
+                  type="text"
+                  placeholder="Quantity"
+                  value={quantities[product.id] ?? 1}
+                  onChange={(e) =>
+                    handleQuantityChange(product.id, e.target.value)
+                  }
+                  className="quantity-input"
+                />
+                <button onClick={() => handleAddToBag(product)}>
+                  Add to Bag
+                </button>
+              </div>
             </div>
           </div>
         ))}

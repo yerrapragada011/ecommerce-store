@@ -1,4 +1,5 @@
 import React from 'react'
+import './Bag.css'
 
 const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const totalPrice = items.reduce((sum, item) => {
@@ -40,7 +41,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   }
 
   return (
-    <div>
+    <div className="bag-container">
       <h1>Your Bag</h1>
       <div>
         {items.length === 0 ? (
@@ -48,7 +49,11 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
         ) : (
           <div>
             {items.map((item, index) => (
-              <div key={index} style={{ marginBottom: '20px' }}>
+              <div key={index} className="bag-item">
+                <img
+                  src={item.images?.edges[0]?.node?.src}
+                  alt={item.title}
+                />
                 <h3>{item.title}</h3>
                 <p>Price: ${item.variants.edges[0]?.node.price || 'N/A'}</p>
 
@@ -68,12 +73,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
               </div>
             ))}
             <h2>Total: ${totalPrice.toFixed(2)}</h2>
-            <button
-              onClick={proceedToCheckout}
-              style={{
-                marginTop: '20px',
-              }}
-            >
+            <button onClick={proceedToCheckout} className="checkout-button">
               Proceed to Checkout
             </button>
           </div>

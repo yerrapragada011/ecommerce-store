@@ -1,0 +1,38 @@
+.product-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-card {
+  border: 1px solid #ccc;
+  padding: 50px 100px;
+  width: 800px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 2%;
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 2%;
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-input {
+  width: 60px;
+  text-align: center;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
