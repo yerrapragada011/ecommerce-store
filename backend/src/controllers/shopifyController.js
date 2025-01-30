@@ -13,6 +13,13 @@ const getProducts = async (req, res) => {
             node {
               id
               title
+              images(first: 1) {
+                edges {
+                  node {
+                    src
+                  }
+                }
+              }
               variants(first: 5) {
                 edges {
                   node {
@@ -29,14 +36,16 @@ const getProducts = async (req, res) => {
 
     const response = await client.request(query)
 
-    if (response && response.body && response.body.errors) {
+    if (response?.body?.errors) {
       throw new Error(`GraphQL Error: ${response.body.errors[0].message}`)
     }
 
-    const products = response.data.products.edges.map((edge) => edge.node)
+    const products =
+      response?.data?.products?.edges?.map((edge) => edge.node) || []
+
     return res.json({ products })
   } catch (error) {
-    console.error('Error fetching products:', error)
+    console.error('Error fetching products:', error.message)
     res.status(500).json({ error: 'Failed to fetch products.' })
   }
 }
@@ -49,44 +58,48 @@ const createCheckout = async (req, res) => {
     const client = getGraphqlClient(shop)
 
     const query = `
-        mutation {
-          draftOrderCreate(input: {
-            lineItems: [
-              ${lineItems
-                .map(
-                  (item) => `
-                    {
-                      variantId: "${item.variant_id}",
-                      quantity: ${item.quantity}
-                    }
-                  `
-                )
-                .join(',')}
-            ]
-          }) {
-            draftOrder {
-              id
-              invoiceUrl
-            }
-            userErrors {
-              field
-              message
-            }
+      mutation {
+        draftOrderCreate(input: {
+          lineItems: [
+            ${lineItems
+              .map(
+                (item) => `
+                  {
+                    variantId: "${item.variant_id}",
+                    quantity: ${item.quantity}
+                  }
+                `
+              )
+              .join(',')}
+          ]
+        }) {
+          draftOrder {
+            id
+            invoiceUrl
+          }
+          userErrors {
+            field
+            message
           }
         }
-      `
+      }
+    `
 
     const response = await client.request(query)
 
-    if (response && response.errors) {
+    if (response?.errors) {
       throw new Error(`GraphQL Error: ${response.errors[0].message}`)
     }
 
-    res.status(201).json({
-      checkoutUrl: response.data.draftOrderCreate.draftOrder.invoiceUrl,
-    })
+    const checkoutUrl = response?.data?.draftOrderCreate?.draftOrder?.invoiceUrl
+
+    if (!checkoutUrl) {
+      throw new Error('Failed to retrieve checkout URL.')
+    }
+
+    res.status(201).json({ checkoutUrl })
   } catch (error) {
-    console.error('Error creating draft order:', error)
+    console.error('Error creating draft order:', error.message)
     res.status(500).json({ error: 'Failed to create draft order.' })
   }
 }

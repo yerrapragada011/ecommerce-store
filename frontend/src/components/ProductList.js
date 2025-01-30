@@ -65,7 +65,11 @@ const ProductList = ({ addToBag }) => {
               width: '200px',
             }}
           >
-            <img src={product.image?.src} alt={product.title} width="100%" />
+            <img
+              src={product.images?.edges[0]?.node?.src}
+              alt={product.title}
+              width="100%"
+            />
             <h2>{product.title}</h2>
             <p>${product.variants.edges[0]?.node.price}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
