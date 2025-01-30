@@ -40,6 +40,7 @@ const ProductList = ({ addToBag }) => {
   const handleAddToBag = (product) => {
     const quantity = quantities[product.id] > 0 ? quantities[product.id] : 1
     addToBag(product, quantity)
+    alert('Added to bag!')
     setQuantities((prev) => ({ ...prev, [product.id]: 1 }))
   }
 
