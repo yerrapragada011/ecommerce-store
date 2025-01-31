@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import './ProductList.css'
 
-const ProductList = ({ addToBag }) => {
+const ProductList = ({ addToBag, bagItems }) => {
   const [products, setProducts] = useState([])
-  const [quantities, setQuantities] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -29,20 +29,10 @@ const ProductList = ({ addToBag }) => {
     fetchProducts()
   }, [])
 
-  const handleQuantityChange = (id, value) => {
-    if (/^\d*$/.test(value)) {
-      setQuantities((prev) => ({
-        ...prev,
-        [id]: value === '' ? '' : parseInt(value, 10),
-      }))
-    }
-  }
-
   const handleAddToBag = (product) => {
-    const quantity = quantities[product.id] > 0 ? quantities[product.id] : 1
-    addToBag(product, quantity)
-    alert('Added to bag!')
-    setQuantities((prev) => ({ ...prev, [product.id]: 1 }))
+    if (!bagItems.some((item) => item.id === product.id)) {
+      addToBag(product, 1)
+    }
   }
 
   if (loading) {
@@ -50,38 +40,37 @@ const ProductList = ({ addToBag }) => {
   }
 
   if (error) {
-    return <p>{error}</p>
+    return <p className="error">{error}</p>
   }
 
   return (
     <div>
       <div className="product-list">
-        {products.map((product) => (
-          <div key={product.id} className="product-card">
-            <img
-              src={product.images?.edges[0]?.node?.src}
-              alt={product.title}
-            />
-            <div className="product-info">
-              <h2>{product.title}</h2>
-              <p>${product.variants.edges[0]?.node.price}</p>
-              <div className="product-actions">
-                <input
-                  type="text"
-                  placeholder="Quantity"
-                  value={quantities[product.id] ?? 1}
-                  onChange={(e) =>
-                    handleQuantityChange(product.id, e.target.value)
-                  }
-                  className="quantity-input"
-                />
-                <button onClick={() => handleAddToBag(product)}>
-                  Add to Bag
-                </button>
+        {products.map((product) => {
+          const inBag = bagItems.some((item) => item.id === product.id)
+          return (
+            <div key={product.id} className="product-card">
+              <img
+                src={product.images?.edges[0]?.node?.src}
+                alt={product.title}
+              />
+              <div className="product-info">
+                <p>{product.title}</p>
+                <div className="product-details">
+                  <p>${product.variants.edges[0]?.node.price}</p>
+                  <Link
+                    to="/bag"
+                    onClick={() => !inBag && handleAddToBag(product)}
+                  >
+                    <button className="product-info-button">
+                      {inBag ? 'Continue Checkout' : 'Buy now'}
+                    </button>
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

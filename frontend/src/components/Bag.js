@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import './Bag.css'
 
 const Bag = ({ items, updateQuantity, removeFromBag }) => {
@@ -42,40 +43,59 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
   return (
     <div className="bag-container">
-      <h1>Your Bag</h1>
       <div>
         {items.length === 0 ? (
-          <p>Your bag is empty.</p>
+          <div className="empty-bag-container">
+            <div className="back-link">
+              <Link to="/">
+                <button className="empty-back-button">←</button>
+              </Link>
+            </div>
+            <p className="empty-bag">Your bag is empty.</p>
+          </div>
         ) : (
-          <div>
+          <div className="bag-items-container">
+            <div className="back-link">
+              <Link to="/">
+                <button className="back-button">←</button>
+              </Link>
+            </div>
             {items.map((item, index) => (
               <div key={index} className="bag-item">
-                <img
-                  src={item.images?.edges[0]?.node?.src}
-                  alt={item.title}
-                />
-                <h3>{item.title}</h3>
-                <p>Price: ${item.variants.edges[0]?.node.price || 'N/A'}</p>
+                <img src={item.images?.edges[0]?.node?.src} alt={item.title} />
+                <div className="bag-item-info">
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>Price: ${item.variants.edges[0]?.node.price || 'N/A'}</p>
 
-                <p>Quantity: {item.quantity}</p>
-                <button
-                  onClick={() => updateQuantity(index, item.quantity - 1)}
-                  disabled={item.quantity === 1}
-                >
-                  -
-                </button>
-                <button
-                  onClick={() => updateQuantity(index, item.quantity + 1)}
-                >
-                  +
-                </button>
-                <button onClick={() => removeFromBag(index)}>Remove</button>
+                    <p>Quantity: {item.quantity}</p>
+                  </div>
+                  <div className="quantity-buttons">
+                    <button
+                      onClick={() => updateQuantity(index, item.quantity - 1)}
+                      disabled={item.quantity === 1}
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={() => updateQuantity(index, item.quantity + 1)}
+                      disabled={item.quantity === 10}
+                    >
+                      +
+                    </button>
+                    <button onClick={() => removeFromBag(index)}>Remove</button>
+                  </div>
+                </div>
               </div>
             ))}
-            <h2>Total: ${totalPrice.toFixed(2)}</h2>
-            <button onClick={proceedToCheckout} className="checkout-button">
-              Proceed to Checkout
-            </button>
+            <div className="checkout-container">
+              <p className="total-price">Total: ${totalPrice.toFixed(2)}</p>
+              <div className="checkout-button-container">
+                <button onClick={proceedToCheckout} className="checkout-button">
+                  Proceed to Checkout
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

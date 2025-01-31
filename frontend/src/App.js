@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ProductList from './components/ProductList'
 import Bag from './components/Bag'
 import './App.css'
 
 const App = () => {
-  const [bagItems, setBagItems] = useState([])
+  const [bagItems, setBagItems] = useState(() => {
+    return JSON.parse(localStorage.getItem('bagItems')) || []
+  })
+
+  useEffect(() => {
+    localStorage.setItem('bagItems', JSON.stringify(bagItems))
+  }, [bagItems])
 
   const addToBag = (product, quantity) => {
     setBagItems((prevItems) => {
@@ -48,10 +54,6 @@ const App = () => {
 
   return (
     <Router>
-      <nav className='nav'>
-        <Link to="/">Home</Link>
-        <Link to="/bag">Bag</Link>
-      </nav>
       <Routes>
         <Route
           path="/"
