@@ -18,8 +18,8 @@
 }
 
 .checkout-button {
-  background-color: transparent;
-  border: 5px solid white;
+  background-color: #007bff;
+  border: 2px solid white;
   border-radius: 5%;
   padding: 20px;
   color: white;
@@ -158,7 +158,8 @@
 .quantity-buttons button:hover,
 .checkout-button:hover,
 .bag-item img:hover,
-.empty-back-button:hover {
+.empty-back-button:hover,
+.modal-buttons button:hover {
   transform: translateY(5px);
 }
 
@@ -166,4 +167,76 @@
   background-color: rgb(255, 255, 255, 0.3);
   color: white;
   cursor: not-allowed;
+  transform: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: slategrey;
+  border: 2px solid white;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  color: white;
+}
+
+.modal-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-buttons button {
+  padding: 0.5rem 1rem;
+  border: 2px solid white;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-buttons button:hover {
+  background-color: #0056b3;
+  transition: transform 0.3s ease;
+}
+
+.remove-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quantity-buttons .remove-button {
+  background-color: red;
+  border-color: red;
+  border: 2px solid white;
+}
+.quantity-buttons .remove-button:hover {
+  background-color: darkred;
+}
+
+.modal-buttons .yes-button {
+  background-color: red;
+}
+.modal-buttons .yes-button:hover {
+  background-color: darkred;
 }

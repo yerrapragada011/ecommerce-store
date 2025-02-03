@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Bag.css'
 
 const Bag = ({ items, updateQuantity, removeFromBag }) => {
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null)
+
   const totalPrice = items.reduce((sum, item) => {
     const price = item.variants.edges[0]?.node.price
       ? parseFloat(item.variants.edges[0]?.node.price)
@@ -41,6 +44,21 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     }
   }
 
+  const handleRemoveClick = (index) => {
+    setSelectedItemIndex(index)
+    setModalOpen(true)
+  }
+
+  const confirmRemoval = () => {
+    removeFromBag(selectedItemIndex)
+    setModalOpen(false)
+  }
+
+  const cancelRemoval = () => {
+    setModalOpen(false)
+    setSelectedItemIndex(null)
+  }
+
   return (
     <div className="bag-container">
       <div>
@@ -67,7 +85,6 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                   <div>
                     <h3>{item.title}</h3>
                     <p>Price: ${item.variants.edges[0]?.node.price || 'N/A'}</p>
-
                     <p>Quantity: {item.quantity}</p>
                   </div>
                   <div className="quantity-buttons">
@@ -83,7 +100,12 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                     >
                       +
                     </button>
-                    <button onClick={() => removeFromBag(index)}>Remove</button>
+                    <button
+                      onClick={() => handleRemoveClick(index)}
+                      className="remove-button"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
               </div>
@@ -99,6 +121,20 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
           </div>
         )}
       </div>
+
+      {modalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <p>Are you sure you want to remove this product from your bag?</p>
+            <div className="modal-buttons">
+              <button className="yes-button" onClick={confirmRemoval}>
+                Yes
+              </button>
+              <button onClick={cancelRemoval}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

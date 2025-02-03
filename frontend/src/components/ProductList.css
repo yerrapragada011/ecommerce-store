@@ -71,8 +71,8 @@
 
 .product-info-button {
   margin-top: 20px;
-  background-color: transparent;
-  border: 5px solid white;
+  background-color: #007bff;
+  border: 2px solid white;
   border-radius: 5%;
   padding: 20px;
   color: white;
