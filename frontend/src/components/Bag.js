@@ -33,7 +33,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
       if (response.ok) {
         const data = await response.json()
-        window.open(data.checkoutUrl, '_blank')
+        window.location.href = data.checkoutUrl
       } else {
         console.error('Failed to create checkout session')
         alert('Failed to proceed to checkout. Please try again.')
