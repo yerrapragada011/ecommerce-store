@@ -85,7 +85,12 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                   <div>
                     <h3>{item.title}</h3>
                     <p>Price: ${item.variants.edges[0]?.node.price || 'N/A'}</p>
-                    <p>Quantity: {item.quantity}</p>
+                    <p>
+                      Quantity:{' '}
+                      <span key={item.quantity} className="value-update">
+                        {item.quantity}
+                      </span>
+                    </p>
                   </div>
                   <div className="quantity-buttons">
                     <button
@@ -111,7 +116,13 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
               </div>
             ))}
             <div className="checkout-container">
-              <p className="total-price">Total: ${totalPrice.toFixed(2)}</p>
+              <p className="total-price">
+                Total:{' '}
+                <span key={totalPrice} className="value-update">
+                  ${totalPrice.toFixed(2)}
+                </span>
+              </p>
+
               <div className="checkout-button-container">
                 <button onClick={proceedToCheckout} className="checkout-button">
                   Proceed to Checkout

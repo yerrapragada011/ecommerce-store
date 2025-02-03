@@ -1,6 +1,35 @@
+@keyframes fadeInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes valueUpdate {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.value-update {
+  animation: valueUpdate 1s ease-out;
+}
+
 .bag-item {
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   padding: 50px 100px;
   border-radius: 2%;
   color: white;
@@ -31,7 +60,7 @@
 }
 
 .checkout-button:hover {
-  background-color: rgb(255, 255, 255, 0.1);
+  background-color: #0056b3;
   color: white;
   cursor: pointer;
 }
@@ -40,11 +69,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  animation: fadeInFromTop 0.5s ease-out;
 }
 
 .bag-items-container {
   color: white;
+  min-height: 100vh;
 }
 
 .empty-bag-container {
@@ -66,7 +96,7 @@
 
 .back-button {
   background-color: transparent;
-  border: 0.1px solid white;
+  border: 2px solid white;
   border-radius: 35px;
   padding: 10px;
   color: white;
@@ -192,6 +222,7 @@
   max-width: 400px;
   width: 90%;
   color: white;
+  animation: fadeInFromTop 0.5s ease-out;
 }
 
 .modal-buttons {
@@ -239,4 +270,27 @@
 }
 .modal-buttons .yes-button:hover {
   background-color: darkred;
+}
+
+@media (max-width: 768px) {
+  .bag-item {
+    padding: 20px 40px;
+  }
+
+  .bag-item-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .checkout-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
