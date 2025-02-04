@@ -46,31 +46,23 @@ const ProductList = ({ addToBag, bagItems }) => {
   return (
     <div>
       <div className="product-list">
-        {products.map((product) => {
-          const inBag = bagItems.some((item) => item.id === product.id)
-          return (
-            <div key={product.id} className="product-card">
-              <img
-                src={product.images?.edges[0]?.node?.src}
-                alt={product.title}
-              />
-              <div className="product-info">
-                <p>{product.title}</p>
-                <div className="product-details">
-                  <p>${product.variants.edges[0]?.node.price}</p>
-                  <Link
-                    to="/bag"
-                    onClick={() => !inBag && handleAddToBag(product)}
-                  >
-                    <button className="product-info-button">
-                      {inBag ? 'Continue Checkout' : 'Buy now'}
-                    </button>
-                  </Link>
-                </div>
+        {products.map((product) => (
+          <div key={product.id} className="product-card">
+            <img
+              src={product.images?.edges[0]?.node?.src}
+              alt={product.title}
+            />
+            <div className="product-info">
+              <p>{product.title}</p>
+              <div className="product-details">
+                <p>${product.variants.edges[0]?.node.price}</p>
+                <Link to="/bag" onClick={() => handleAddToBag(product)}>
+                  <button className="product-info-button">Buy now</button>
+                </Link>
               </div>
             </div>
-          )
-        })}
+          </div>
+        ))}
       </div>
     </div>
   )

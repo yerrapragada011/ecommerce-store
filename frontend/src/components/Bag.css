@@ -33,16 +33,16 @@
   padding: 50px 100px;
   border-radius: 2%;
   color: white;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 .bag-item img {
   width: 100%;
   border-radius: 2%;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
-    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
-    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
   transition: transform 0.3s ease;
 }
 
@@ -69,73 +69,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   animation: fadeInFromTop 0.5s ease-out;
 }
 
 .bag-items-container {
   color: white;
-  min-height: 100vh;
-}
-
-.empty-bag-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.empty-bag {
-  color: white;
-  text-align: center;
-}
-
-.back-link {
-  margin-bottom: 20px;
-}
-
-.back-button {
-  background-color: transparent;
-  border: 2px solid white;
-  border-radius: 35px;
-  padding: 10px;
-  color: white;
-  font-size: 20px;
-  font-family: inherit;
-  transition: transform 0.3s ease;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-}
-
-.empty-back-button {
-  background-color: transparent;
-  border: 0.1px solid white;
-  border-radius: 35px;
-  padding: 10px;
-  color: white;
-  font-size: 50px;
-  font-family: inherit;
-  transition: transform 0.3s ease;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-  transition: transform 0.3s ease;
-}
-
-.empty-back-button:hover {
-  background-color: rgb(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background-color: rgb(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
 }
 
 .checkout-container {
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
 }
 
 .total-price {
@@ -184,11 +130,9 @@
   margin-top: 20px;
 }
 
-.back-button:hover,
 .quantity-buttons button:hover,
 .checkout-button:hover,
 .bag-item img:hover,
-.empty-back-button:hover,
 .modal-buttons button:hover {
   transform: translateY(5px);
 }

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import './Bag.css'
 
 const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedItemIndex, setSelectedItemIndex] = useState(null)
+  const navigate = useNavigate()
 
   const totalPrice = items.reduce((sum, item) => {
     const price = item.variants.edges[0]?.node.price
@@ -52,6 +53,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const confirmRemoval = () => {
     removeFromBag(selectedItemIndex)
     setModalOpen(false)
+    navigate('/')
   }
 
   const cancelRemoval = () => {
@@ -62,75 +64,58 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   return (
     <div className="bag-container">
       <div>
-        {items.length === 0 ? (
-          <div className="empty-bag-container">
-            <div className="back-link">
-              <Link to="/">
-                <button className="empty-back-button">←</button>
-              </Link>
-            </div>
-            <p className="empty-bag">Your bag is empty.</p>
-          </div>
-        ) : (
-          <div className="bag-items-container">
-            <div className="back-link">
-              <Link to="/">
-                <button className="back-button">←</button>
-              </Link>
-            </div>
-            {items.map((item, index) => (
-              <div key={index} className="bag-item">
-                <img src={item.images?.edges[0]?.node?.src} alt={item.title} />
-                <div className="bag-item-info">
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>Price: ${item.variants.edges[0]?.node.price || 'N/A'}</p>
-                    <p>
-                      Quantity:{' '}
-                      <span key={item.quantity} className="value-update">
-                        {item.quantity}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="quantity-buttons">
-                    <button
-                      onClick={() => updateQuantity(index, item.quantity - 1)}
-                      disabled={item.quantity === 1}
-                    >
-                      -
-                    </button>
-                    <button
-                      onClick={() => updateQuantity(index, item.quantity + 1)}
-                      disabled={item.quantity === 10}
-                    >
-                      +
-                    </button>
-                    <button
-                      onClick={() => handleRemoveClick(index)}
-                      className="remove-button"
-                    >
-                      Remove
-                    </button>
-                  </div>
+        <div className="bag-items-container">
+          {items.map((item, index) => (
+            <div key={index} className="bag-item">
+              <img src={item.images?.edges[0]?.node?.src} alt={item.title} />
+              <div className="bag-item-info">
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>Price: ${item.variants.edges[0]?.node.price || 'N/A'}</p>
+                  <p>
+                    Quantity:{' '}
+                    <span key={item.quantity} className="value-update">
+                      {item.quantity}
+                    </span>
+                  </p>
+                </div>
+                <div className="quantity-buttons">
+                  <button
+                    onClick={() => updateQuantity(index, item.quantity - 1)}
+                    disabled={item.quantity === 1}
+                  >
+                    -
+                  </button>
+                  <button
+                    onClick={() => updateQuantity(index, item.quantity + 1)}
+                    disabled={item.quantity === 10}
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => handleRemoveClick(index)}
+                    className="remove-button"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
-            ))}
-            <div className="checkout-container">
-              <p className="total-price">
-                Total:{' '}
-                <span key={totalPrice} className="value-update">
-                  ${totalPrice.toFixed(2)}
-                </span>
-              </p>
-
-              <div className="checkout-button-container">
-                <button onClick={proceedToCheckout} className="checkout-button">
-                  Proceed to Checkout
-                </button>
-              </div>
+            </div>
+          ))}
+          <div className="checkout-container">
+            <p className="total-price">
+              Total:{' '}
+              <span key={totalPrice} className="value-update">
+                ${totalPrice.toFixed(2)}
+              </span>
+            </p>
+            <div className="checkout-button-container">
+              <button onClick={proceedToCheckout} className="checkout-button">
+                Proceed to Checkout
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {modalOpen && (
