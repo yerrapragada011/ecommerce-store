@@ -103,6 +103,7 @@
 
 .product-details p {
   font-size: 50px;
+  font-family: none;
 }
 
 @media (max-width: 768px) {

@@ -78,13 +78,18 @@
   color: white;
 }
 
+.price {
+  font-family: none;
+}
+
 .checkout-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
 }
 
 .total-price {
+  display: flex;
+  gap: 10px;
   font-size: 50px;
   text-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
 }
