@@ -54,7 +54,6 @@
   color: white;
   font-size: 20px;
   font-family: inherit;
-  transition: transform 0.3s ease;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
     rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
@@ -63,6 +62,7 @@
   background-color: #0056b3;
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .bag-container {
@@ -112,7 +112,6 @@
   color: white;
   font-size: 20px;
   font-family: inherit;
-  transition: transform 0.3s ease;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
     rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
@@ -120,13 +119,13 @@
 .quantity-buttons button:disabled {
   background-color: rgb(255, 255, 255, 0.3);
   color: white;
-  transition: none;
 }
 
 .quantity-buttons button:hover {
   background-color: rgb(255, 255, 255, 0.1);
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .bag-item-info {
@@ -135,10 +134,7 @@
   margin-top: 20px;
 }
 
-.quantity-buttons button:hover,
-.checkout-button:hover,
-.bag-item img:hover,
-.modal-buttons button:hover {
+.bag-item img:hover {
   transform: translateY(5px);
 }
 
@@ -146,7 +142,6 @@
   background-color: rgb(255, 255, 255, 0.3);
   color: white;
   cursor: not-allowed;
-  transform: none;
 }
 
 .modal-overlay {
@@ -191,7 +186,7 @@
 
 .modal-buttons button:hover {
   background-color: #0056b3;
-  transition: transform 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .remove-button {

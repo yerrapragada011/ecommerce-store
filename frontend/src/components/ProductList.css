@@ -39,8 +39,7 @@
 }
 
 .product-card img:hover,
-.product-info p:hover,
-.product-info button:hover {
+.product-info p:hover {
   transform: translateY(5px);
 }
 
@@ -86,13 +85,13 @@
   box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
     rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
   font-family: inherit;
-  transition: transform 0.3s ease;
 }
 
 .product-info button:hover {
   background-color: #0056b3;
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .product-details {
