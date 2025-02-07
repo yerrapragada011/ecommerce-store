@@ -38,8 +38,7 @@
   transition: transform 0.3s ease;
 }
 
-.product-card img:hover,
-.product-info p:hover {
+.product-card img:hover {
   transform: translateY(5px);
 }
 
@@ -71,7 +70,6 @@
 .product-info p {
   font-size: 50px;
   text-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease;
 }
 
 .product-info-button {
