@@ -63,59 +63,57 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
   return (
     <div className="bag-container">
-      <div>
-        <div className="bag-items-container">
-          {items.map((item, index) => (
-            <div key={index} className="bag-item">
-              <img src={item.images?.edges[0]?.node?.src} alt={item.title} />
-              <div className="bag-item-info">
-                <div>
-                  <h3>{item.title}</h3>
-                  <p className="price">
-                    Price: ${item.variants.edges[0]?.node.price || 'N/A'}
-                  </p>
-                  <p>
-                    Quantity:{' '}
-                    <span key={item.quantity} className="value-update">
-                      {item.quantity}
-                    </span>
-                  </p>
-                </div>
-                <div className="quantity-buttons">
-                  <button
-                    onClick={() => updateQuantity(index, item.quantity - 1)}
-                    disabled={item.quantity === 1}
-                  >
-                    -
-                  </button>
-                  <button
-                    onClick={() => updateQuantity(index, item.quantity + 1)}
-                    disabled={item.quantity === 10}
-                  >
-                    +
-                  </button>
-                  <button
-                    onClick={() => handleRemoveClick(index)}
-                    className="remove-button"
-                  >
-                    Remove
-                  </button>
-                </div>
+      <div className="bag-items-container">
+        {items.map((item, index) => (
+          <div key={index} className="bag-item">
+            <img src={item.images?.edges[0]?.node?.src} alt={item.title} />
+            <div className="bag-item-info">
+              <div>
+                <h3>{item.title}</h3>
+                <p className="price">
+                  Price: ${item.variants.edges[0]?.node.price || 'N/A'}
+                </p>
+                <p>
+                  Quantity:{' '}
+                  <span key={item.quantity} className="value-update">
+                    {item.quantity}
+                  </span>
+                </p>
+              </div>
+              <div className="quantity-buttons">
+                <button
+                  onClick={() => updateQuantity(index, item.quantity - 1)}
+                  disabled={item.quantity === 1}
+                >
+                  -
+                </button>
+                <button
+                  onClick={() => updateQuantity(index, item.quantity + 1)}
+                  disabled={item.quantity === 10}
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => handleRemoveClick(index)}
+                  className="remove-button"
+                >
+                  Remove
+                </button>
               </div>
             </div>
-          ))}
-          <div className="checkout-container">
-            <p className="total-price">
-              <p>Total: </p>
-              <span key={totalPrice} className="value-update">
-                <p className="price">${totalPrice.toFixed(2)}</p>
-              </span>
-            </p>
-            <div className="checkout-button-container">
-              <button onClick={proceedToCheckout} className="checkout-button">
-                Proceed to Checkout
-              </button>
-            </div>
+          </div>
+        ))}
+        <div className="checkout-container">
+          <p className="total-price">
+            <p>Total: </p>
+            <span key={totalPrice} className="value-update">
+              <p className="price">${totalPrice.toFixed(2)}</p>
+            </span>
+          </p>
+          <div className="checkout-button-container">
+            <button onClick={proceedToCheckout} className="checkout-button">
+              Proceed to Checkout
+            </button>
           </div>
         </div>
       </div>
