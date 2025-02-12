@@ -1,0 +1,27 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+}
+
+.logo {
+  font-size: 24px;
+  text-decoration: none;
+  color: white;
+}
+
+.bag-button {
+  font-size: 18px;
+  text-decoration: none;
+  color: white;
+  background-color: #007bff;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+.bag-button:hover {
+  background-color: #0056b3;
+}

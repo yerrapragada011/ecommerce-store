@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import './ProductList.css'
 
 const ProductList = ({ addToBag, bagItems }) => {
   const [products, setProducts] = useState([])
+  const [quantities, setQuantities] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,10 +30,28 @@ const ProductList = ({ addToBag, bagItems }) => {
     fetchProducts()
   }, [])
 
+  const handleQuantityChange = (id, value) => {
+    if (/^\d*$/.test(value)) {
+      setQuantities((prev) => ({
+        ...prev,
+        [id]: value === '' ? '' : parseInt(value, 10),
+      }))
+    }
+  }
+
   const handleAddToBag = (product) => {
     if (!bagItems.some((item) => item.id === product.id)) {
-      addToBag(product, 1)
+      addToBag(product, quantities[product.id] || 1)
     }
+    setSelectedProduct(null) // Close the modal after adding to the bag
+  }
+
+  const handleViewItem = (product) => {
+    setSelectedProduct(product)
+  }
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null)
   }
 
   if (loading) {
@@ -53,17 +72,63 @@ const ProductList = ({ addToBag, bagItems }) => {
               alt={product.title}
             />
             <div className="product-info">
-              <p>{product.title}</p>
+              <p className="product-title">{product.title}</p>
               <div className="product-details">
-                <p>${product.variants.edges[0]?.node.price}</p>
-                <Link to="/bag" onClick={() => handleAddToBag(product)}>
-                  <button className="product-info-button">Buy now</button>
-                </Link>
+                <p className="product-price">
+                  ${product.variants.edges[0]?.node.price}
+                </p>
+                <div className="product-actions">
+                  <button
+                    className="view-item-button"
+                    onClick={() => handleViewItem(product)}
+                  >
+                    View Item
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal for Viewing Item */}
+      {selectedProduct && (
+        <div className="modal-container">
+          <div className="modal">
+            <div className="modal-content">
+              <span className="close-button" onClick={handleCloseModal}>
+                &times;
+              </span>
+              <img
+                src={selectedProduct.images?.edges[0]?.node?.src}
+                alt={selectedProduct.title}
+                className="modal-image"
+              />
+              <div className="modal-details">
+                <h3>{selectedProduct.title}</h3>
+                <p className="product-price">
+                  ${selectedProduct.variants.edges[0]?.node.price}
+                </p>
+                <input
+                  type="text"
+                  placeholder="Quantity"
+                  value={quantities[selectedProduct.id] ?? 1}
+                  onChange={(e) =>
+                    handleQuantityChange(selectedProduct.id, e.target.value)
+                  }
+                  className="quantity-input"
+                />
+                <button
+                  className="add-to-bag"
+                  onClick={() => handleAddToBag(selectedProduct)}
+                >
+                  Add to Bag
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
