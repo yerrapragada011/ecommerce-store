@@ -86,15 +86,6 @@
   align-items: center;
 }
 
-.quantity-input {
-  width: 50px;
-  text-align: center;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-/* Modal styles */
 .modal-container {
   display: flex;
   justify-content: center;
@@ -105,10 +96,13 @@
   right: 0;
   bottom: 0;
   z-index: 1000;
+  animation: fadeInFromTop 0.5s ease-out;
 }
 
-.modal {
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
+.quantity-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .modal-content {
@@ -117,10 +111,10 @@
   border-radius: 10px;
   text-align: center;
   width: 400px;
-  max-width: 90%;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
   z-index: 1010;
 }
 

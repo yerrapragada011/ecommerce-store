@@ -91,24 +91,23 @@ const ProductList = ({ addToBag, bagItems }) => {
         ))}
       </div>
 
-      {/* Modal for Viewing Item */}
       {selectedProduct && (
         <div className="modal-container">
-          <div className="modal">
-            <div className="modal-content">
-              <span className="close-button" onClick={handleCloseModal}>
-                &times;
-              </span>
-              <img
-                src={selectedProduct.images?.edges[0]?.node?.src}
-                alt={selectedProduct.title}
-                className="modal-image"
-              />
-              <div className="modal-details">
-                <h3>{selectedProduct.title}</h3>
-                <p className="product-price">
-                  ${selectedProduct.variants.edges[0]?.node.price}
-                </p>
+          <div className="modal-content">
+            <span className="close-button" onClick={handleCloseModal}>
+              &times;
+            </span>
+            <img
+              src={selectedProduct.images?.edges[0]?.node?.src}
+              alt={selectedProduct.title}
+              className="modal-image"
+            />
+            <div className="modal-details">
+              <h3>{selectedProduct.title}</h3>
+              <p className="product-price">
+                ${selectedProduct.variants.edges[0]?.node.price}
+              </p>
+              <div className="quantity-container">
                 <input
                   type="text"
                   placeholder="Quantity"
