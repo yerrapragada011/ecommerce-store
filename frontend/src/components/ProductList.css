@@ -82,7 +82,6 @@
   color: gray;
 }
 
-
 .modal-container {
   display: flex;
   justify-content: center;
@@ -195,6 +194,25 @@
   padding: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
+}
+
+.thumbnail-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 5px;
+}
+
+.thumbnail.active {
+  border-color: gray;
 }
 
 @media (max-width: 768px) {

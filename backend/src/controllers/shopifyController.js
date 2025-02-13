@@ -13,7 +13,7 @@ const getProducts = async (req, res) => {
             node {
               id
               title
-              images(first: 1) {
+              images(first: 5) {
                 edges {
                   node {
                     src

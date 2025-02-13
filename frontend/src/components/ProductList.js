@@ -8,6 +8,7 @@ const ProductList = ({ addToBag, bagItems }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [mainImage, setMainImage] = useState(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,6 +39,12 @@ const ProductList = ({ addToBag, bagItems }) => {
 
     fetchProducts()
   }, [])
+
+  useEffect(() => {
+    if (selectedProduct && selectedProduct.images.edges.length > 0) {
+      setMainImage(selectedProduct.images.edges[0]?.node.src)
+    }
+  }, [selectedProduct])
 
   const handleQuantityChange = (id, value) => {
     if (/^\d*$/.test(value)) {
@@ -81,7 +88,7 @@ const ProductList = ({ addToBag, bagItems }) => {
               alt={product.title}
             />
             <div className="product-info">
-              <div className='product-details'>
+              <div className="product-details">
                 <p className="product-title">{product.title}</p>
                 <p className="product-price">
                   ${product.variants.edges[0]?.node.price}
@@ -106,11 +113,28 @@ const ProductList = ({ addToBag, bagItems }) => {
             <span className="close-button" onClick={handleCloseModal}>
               &times;
             </span>
-            <img
-              src={selectedProduct.images?.edges[0]?.node?.src}
-              alt={selectedProduct.title}
-              className="modal-image"
-            />
+            <div className="image-gallery">
+              {mainImage && (
+                <img
+                  src={mainImage}
+                  alt={selectedProduct?.title}
+                  className="modal-image"
+                />
+              )}
+              <div className="thumbnail-container">
+                {selectedProduct?.images?.edges.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.node.src}
+                    alt={`${selectedProduct.title} ${index + 1}`}
+                    className={`thumbnail ${
+                      image.node.src === mainImage ? 'active' : ''
+                    }`}
+                    onClick={() => setMainImage(image.node.src)}
+                  />
+                ))}
+              </div>
+            </div>
             <div className="modal-details">
               <h3>{selectedProduct.title}</h3>
               <p className="product-price">
