@@ -25,6 +25,7 @@ const getProducts = async (req, res) => {
                   node {
                     id
                     price
+                    inventoryQuantity
                   }
                 }
               }

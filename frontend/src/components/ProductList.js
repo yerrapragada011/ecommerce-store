@@ -18,7 +18,15 @@ const ProductList = ({ addToBag, bagItems }) => {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-        setProducts(data.products)
+
+        const availableProducts = data.products.filter((product) => {
+          const inventory =
+            product.variants.edges[0]?.node?.inventoryQuantity ?? 0
+
+          return inventory > 0
+        })
+
+        setProducts(availableProducts)
       } catch (error) {
         console.error('Error fetching products:', error)
         setError('Failed to load products. Please try again later.')
@@ -43,7 +51,7 @@ const ProductList = ({ addToBag, bagItems }) => {
     if (!bagItems.some((item) => item.id === product.id)) {
       addToBag(product, quantities[product.id] || 1)
     }
-    setSelectedProduct(null) // Close the modal after adding to the bag
+    setSelectedProduct(null)
   }
 
   const handleViewItem = (product) => {
