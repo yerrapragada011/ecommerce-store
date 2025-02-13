@@ -20,11 +20,16 @@
 .product-card {
   background-color: white;
   border-radius: 10px;
-  padding: 12px;
+  padding: 12px 18px;
   width: 180px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
   text-align: center;
   animation: fadeInFromTop 0.5s ease-out;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(5px);
 }
 
 .product-card img {
@@ -100,7 +105,7 @@
 
 .modal-content {
   background-color: white;
-  padding: 20px;
+  padding: 20px 30px;
   border-radius: 10px;
   text-align: center;
   width: 400px;

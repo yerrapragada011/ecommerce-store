@@ -40,11 +40,16 @@
 .bag-item {
   background-color: white;
   border-radius: 10px;
-  padding: 12px;
+  padding: 12px 18px;
   width: 180px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
   text-align: center;
   animation: fadeInFromTop 0.5s ease-out;
+  transition: transform 0.3s ease;
+}
+
+.bag-item:hover {
+  transform: translateY(5px);
 }
 
 .bag-item img {
@@ -52,11 +57,6 @@
   height: 150px;
   object-fit: cover;
   border-radius: 8px;
-  transition: transform 0.3s ease;
-}
-
-.bag-item img:hover {
-  transform: translateY(5px);
 }
 
 .checkout-button {
@@ -103,7 +103,7 @@
   border: 2px solid gray;
   border-radius: 5px;
   padding: 5px;
-  color: black;
+  color: gray;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
