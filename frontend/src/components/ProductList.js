@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import './ProductList.css'
 
 const ProductList = ({ addToBag, bagItems }) => {
@@ -80,19 +81,19 @@ const ProductList = ({ addToBag, bagItems }) => {
               alt={product.title}
             />
             <div className="product-info">
-              <p className="product-title">{product.title}</p>
-              <div className="product-details">
+              <div className='product-details'>
+                <p className="product-title">{product.title}</p>
                 <p className="product-price">
                   ${product.variants.edges[0]?.node.price}
                 </p>
-                <div className="product-actions">
-                  <button
-                    className="view-item-button"
-                    onClick={() => handleViewItem(product)}
-                  >
-                    View Item
-                  </button>
-                </div>
+              </div>
+              <div className="product-actions">
+                <button
+                  className="view-item-button"
+                  onClick={() => handleViewItem(product)}
+                >
+                  View Item
+                </button>
               </div>
             </div>
           </div>
@@ -115,23 +116,29 @@ const ProductList = ({ addToBag, bagItems }) => {
               <p className="product-price">
                 ${selectedProduct.variants.edges[0]?.node.price}
               </p>
-              <div className="quantity-container">
-                <input
-                  type="text"
-                  placeholder="Quantity"
-                  value={quantities[selectedProduct.id] ?? 1}
-                  onChange={(e) =>
-                    handleQuantityChange(selectedProduct.id, e.target.value)
-                  }
-                  className="quantity-input"
-                />
-                <button
-                  className="add-to-bag"
-                  onClick={() => handleAddToBag(selectedProduct)}
-                >
-                  Add to Bag
-                </button>
-              </div>
+              {bagItems.some((item) => item.id === selectedProduct.id) ? (
+                <Link to="/bag" className="view-item-in-bag">
+                  View Item in Bag
+                </Link>
+              ) : (
+                <div className="quantity-container">
+                  <input
+                    type="text"
+                    placeholder="Quantity"
+                    value={quantities[selectedProduct.id] ?? 1}
+                    onChange={(e) =>
+                      handleQuantityChange(selectedProduct.id, e.target.value)
+                    }
+                    className="quantity-input"
+                  />
+                  <button
+                    className="add-to-bag"
+                    onClick={() => handleAddToBag(selectedProduct)}
+                  >
+                    Add to Bag
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

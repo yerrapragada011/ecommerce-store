@@ -35,10 +35,6 @@
   transition: transform 0.3s ease;
 }
 
-.product-card img:hover {
-  transform: translateY(5px);
-}
-
 .loading {
   display: flex;
   justify-content: center;
@@ -48,8 +44,16 @@
 
 .product-info {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
   color: gray;
+  margin-top: 10px;
+}
+
+.product-details {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .error {
@@ -65,7 +69,7 @@
 }
 
 .product-price {
-  font-size: 12px;
+  font-size: 14px;
   color: gray;
 }
 
@@ -73,24 +77,13 @@
   color: gray;
 }
 
-.product-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.product-details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 .modal-container {
   display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
   top: 0;
   left: 0;
   right: 0;
@@ -118,6 +111,12 @@
   z-index: 1010;
 }
 
+.modal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .modal-image {
   width: 100%;
   height: auto;
@@ -125,10 +124,19 @@
 }
 
 .close-button {
-  color: black;
+  color: white;
+  background-color: red;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
   font-size: 24px;
   align-self: flex-end;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+  background-color: darkred;
 }
 
 .view-item-button {
@@ -140,6 +148,22 @@
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.view-item-in-bag {
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.view-item-in-bag:hover {
+  background-color: #0056b3;
 }
 
 .view-item-button:hover {

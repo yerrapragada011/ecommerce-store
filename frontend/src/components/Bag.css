@@ -9,64 +9,6 @@
   }
 }
 
-@keyframes valueUpdate {
-  0% {
-    opacity: 0.5;
-    transform: scale(0.95);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.value-update {
-  animation: valueUpdate 1s ease-out;
-}
-
-.bag-item {
-  border: 2px solid #ccc;
-  padding: 50px 100px;
-  border-radius: 2%;
-  color: white;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
-    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
-    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-}
-
-.bag-item img {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 2%;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-  transition: transform 0.3s ease;
-}
-
-.checkout-button {
-  background-color: #007bff;
-  border: 2px solid white;
-  border-radius: 5%;
-  padding: 20px;
-  color: white;
-  font-size: 20px;
-  font-family: inherit;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-}
-
-.checkout-button:hover {
-  background-color: #0056b3;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
 .bag-container {
   display: flex;
   flex-direction: column;
@@ -77,73 +19,118 @@
 }
 
 .bag-items-container {
-  color: white;
-}
-
-.price {
-  font-family: none;
-}
-
-.checkout-container {
   display: flex;
-  justify-content: space-between;
-}
-
-.total-price {
-  display: flex;
-  gap: 10px;
-  font-size: 50px;
-  text-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5);
-}
-
-.checkout-button-container {
-  align-self: center;
-}
-
-.quantity-buttons {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
+  padding: 20px;
 }
 
-.quantity-buttons button {
-  background-color: transparent;
-  border: 2px solid white;
-  border-radius: 5px;
-  padding: 10px;
-  color: white;
-  font-size: 20px;
-  font-family: inherit;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+.bag-item-details {
+  color: gray;
 }
 
-.quantity-buttons button:disabled {
-  background-color: rgb(255, 255, 255, 0.3);
-  color: white;
-}
-
-.quantity-buttons button:hover {
-  background-color: rgb(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.bag-item-info {
+.bag-items {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.bag-item {
+  background-color: white;
+  border-radius: 10px;
+  padding: 12px;
+  width: 180px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
+  text-align: center;
+  animation: fadeInFromTop 0.5s ease-out;
+}
+
+.bag-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
 }
 
 .bag-item img:hover {
   transform: translateY(5px);
 }
 
-.quantity-buttons button:hover:disabled {
-  background-color: rgb(255, 255, 255, 0.3);
+.checkout-button {
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
   color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.checkout-button:hover {
+  background-color: #0056b3;
+}
+
+.checkout-container {
+  display: flex;
+  gap: 20px;
+}
+
+.checkout-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.total-price {
+  display: flex;
+  gap: 10px;
+  font-size: 24px;
+  color: white;
+}
+
+.quantity-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-button {
+  background-color: white;
+  border: 2px solid gray;
+  border-radius: 5px;
+  padding: 5px;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quantity-buttons button:disabled {
+  background-color: rgba(200, 200, 200, 0.3);
   cursor: not-allowed;
+}
+
+.quantity-button:hover {
+  background-color: lightgray;
+}
+
+.remove-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.remove-button:hover {
+  background-color: darkred;
 }
 
 .modal-overlay {
@@ -160,14 +147,13 @@
 }
 
 .modal {
-  background-color: slategrey;
-  border: 2px solid white;
+  background-color: white;
   padding: 2rem;
   border-radius: 8px;
   text-align: center;
   max-width: 400px;
   width: 90%;
-  color: white;
+  color: black;
   animation: fadeInFromTop 0.5s ease-out;
 }
 
@@ -179,36 +165,11 @@
 
 .modal-buttons button {
   padding: 0.5rem 1rem;
-  border: 2px solid white;
+  border: none;
   background-color: #007bff;
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.modal-buttons button:hover {
-  background-color: #0056b3;
-  transition: background-color 0.3s ease;
-}
-
-.remove-button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.quantity-buttons .remove-button {
-  background-color: red;
-  border-color: red;
-  border: 2px solid white;
-}
-.quantity-buttons .remove-button:hover {
-  background-color: darkred;
 }
 
 .modal-buttons .yes-button {
@@ -218,26 +179,24 @@
   background-color: darkred;
 }
 
+.modal-buttons button:hover {
+  background-color: #0056b3;
+  transition: background-color 0.3s ease;
+}
+
+.empty-bag-message {
+  font-size: 24px;
+  color: white;
+}
+
 @media (max-width: 768px) {
   .bag-item {
-    padding: 20px 40px;
+    padding: 20px;
+    width: 100%;
   }
-
-  .bag-item-info {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
-  }
-
   .checkout-container {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-  }
-
-  .modal-buttons {
-    flex-direction: column;
     gap: 10px;
   }
 }
