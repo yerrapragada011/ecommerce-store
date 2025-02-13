@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import './Bag.css'
 
 const Bag = ({ items, updateQuantity, removeFromBag }) => {
-  const [modalOpen, setModalOpen] = useState(false)
+  const [removeModalOpen, setRemoveModalOpen] = useState(false)
+  const [stockModalOpen, setStockModalOpen] = useState(false)
   const [selectedItemIndex, setSelectedItemIndex] = useState(null)
+  const [stockErrorMessage, setStockErrorMessage] = useState('')
   const navigate = useNavigate()
 
   const totalPrice = items.reduce((sum, item) => {
@@ -47,12 +49,12 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
   const handleRemoveClick = (index) => {
     setSelectedItemIndex(index)
-    setModalOpen(true)
+    setRemoveModalOpen(true)
   }
 
   const confirmRemoval = () => {
     removeFromBag(selectedItemIndex)
-    setModalOpen(false)
+    setRemoveModalOpen(false)
 
     if (items.length === 1) {
       navigate('/')
@@ -60,8 +62,19 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   }
 
   const cancelRemoval = () => {
-    setModalOpen(false)
+    setRemoveModalOpen(false)
     setSelectedItemIndex(null)
+  }
+
+  const handleQuantityIncrease = (index, item) => {
+    const availableStock = item.variants.edges[0]?.node?.inventoryQuantity || 10
+
+    if (item.quantity + 1 > availableStock) {
+      setStockErrorMessage(`Only ${availableStock} left in stock.`)
+      setStockModalOpen(true)
+    } else {
+      updateQuantity(index, item.quantity + 1)
+    }
   }
 
   return (
@@ -97,8 +110,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                     </button>
                     <button
                       className="quantity-button"
-                      onClick={() => updateQuantity(index, item.quantity + 1)}
-                      disabled={item.quantity === 10}
+                      onClick={() => handleQuantityIncrease(index, item)}
                     >
                       +
                     </button>
@@ -129,7 +141,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
         </div>
       )}
 
-      {modalOpen && (
+      {removeModalOpen && (
         <div className="modal-overlay">
           <div className="modal">
             <p>Are you sure you want to remove this product from your bag?</p>
@@ -138,6 +150,17 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                 Yes
               </button>
               <button onClick={cancelRemoval}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {stockModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <p>{stockErrorMessage}</p>
+            <div className="modal-buttons">
+              <button onClick={() => setStockModalOpen(false)}>OK</button>
             </div>
           </div>
         </div>

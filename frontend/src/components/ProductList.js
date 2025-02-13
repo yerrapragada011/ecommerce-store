@@ -9,6 +9,7 @@ const ProductList = ({ addToBag, bagItems }) => {
   const [error, setError] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [mainImage, setMainImage] = useState(null)
+  const [outOfStockError, setOutOfStockError] = useState(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -56,10 +57,23 @@ const ProductList = ({ addToBag, bagItems }) => {
   }
 
   const handleAddToBag = (product) => {
+    const availableQuantity =
+      product.variants.edges[0]?.node?.inventoryQuantity ?? 0
+    const selectedQuantity = quantities[product.id] || 1
+
+    if (selectedQuantity > availableQuantity) {
+      setOutOfStockError(`Only ${availableQuantity} left in stock.`)
+      return
+    }
+
     if (!bagItems.some((item) => item.id === product.id)) {
       addToBag(product, quantities[product.id] || 1)
     }
     setSelectedProduct(null)
+  }
+
+  const handleCloseErrorModal = () => {
+    setOutOfStockError(null)
   }
 
   const handleViewItem = (product) => {
@@ -164,6 +178,17 @@ const ProductList = ({ addToBag, bagItems }) => {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {outOfStockError && (
+        <div className="modal-container">
+          <div className="modal-content">
+            <span className="close-button" onClick={handleCloseErrorModal}>
+              &times;
+            </span>
+            <p className="error-message">{outOfStockError}</p>
           </div>
         </div>
       )}
