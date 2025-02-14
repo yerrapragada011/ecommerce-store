@@ -10,8 +10,8 @@ const Nav = ({ bagItemCount }) => {
         Gus Shop
       </Link>
       <Link to="/bag" className="bag-button">
-        <span className="bag-text">Bag</span>
-        <FaShoppingBag className="bag-icon" /> ({bagItemCount})
+        <FaShoppingBag className="bag-icon" />
+        <span className="bag-text">Bag</span>({bagItemCount})
       </Link>
     </nav>
   )
