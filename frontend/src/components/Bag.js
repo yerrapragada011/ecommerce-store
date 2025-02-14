@@ -83,7 +83,9 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     const availableStock = item.variants.edges[0]?.node?.inventoryQuantity || 10
 
     if (item.quantity + 1 > availableStock) {
-      setStockErrorMessage(`Only ${availableStock} left in stock.`)
+      setStockErrorMessage(
+        `Only (${availableStock}) of ${item.title} left in stock.`
+      )
       setStockModalOpen(true)
       setDisabledButtons((prev) => ({ ...prev, [index]: true }))
     } else {
@@ -150,9 +152,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                       </p>
                       <p>
                         Quantity:{' '}
-                        <span className="value-update">
-                          {item.quantity}
-                        </span>
+                        <span className="value-update">{item.quantity}</span>
                       </p>
                     </div>
                     <div className="quantity-buttons">
