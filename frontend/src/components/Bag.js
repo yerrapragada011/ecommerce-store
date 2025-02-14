@@ -7,19 +7,9 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const [stockModalOpen, setStockModalOpen] = useState(false)
   const [selectedItemIndex, setSelectedItemIndex] = useState(null)
   const [stockErrorMessage, setStockErrorMessage] = useState('')
-  const [mainImage, setMainImage] = useState(null)
   const [mainImages, setMainImages] = useState({})
   const [disabledButtons, setDisabledButtons] = useState({})
   const navigate = useNavigate()
-
-  useEffect(() => {
-    if (items.length > 0) {
-      const firstImage = items[0]?.images?.edges[0]?.node?.src
-      if (firstImage) {
-        setMainImage(firstImage)
-      }
-    }
-  }, [items])
 
   useEffect(() => {
     const initialImages = {}
@@ -143,7 +133,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                           src={image.node.src}
                           alt={`Thumbnail ${idx + 1}`}
                           className={`thumbnail ${
-                            image.node.src === mainImage ? 'active' : ''
+                            image.node.src === mainImages[index] ? 'active' : ''
                           }`}
                           onClick={() =>
                             handleThumbnailClick(image.node.src, index)
@@ -160,7 +150,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                       </p>
                       <p>
                         Quantity:{' '}
-                        <span key={item.quantity} className="value-update">
+                        <span className="value-update">
                           {item.quantity}
                         </span>
                       </p>
