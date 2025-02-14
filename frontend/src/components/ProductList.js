@@ -21,14 +21,11 @@ const ProductList = ({ addToBag, bagItems }) => {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-
         const availableProducts = data.products.filter((product) => {
           const inventory =
             product.variants.edges[0]?.node?.inventoryQuantity ?? 0
-
           return inventory > 0
         })
-
         setProducts(availableProducts)
       } catch (error) {
         console.error('Error fetching products:', error)
@@ -37,7 +34,6 @@ const ProductList = ({ addToBag, bagItems }) => {
         setLoading(false)
       }
     }
-
     fetchProducts()
   }, [])
 
@@ -60,62 +56,40 @@ const ProductList = ({ addToBag, bagItems }) => {
     const availableQuantity =
       product.variants.edges[0]?.node?.inventoryQuantity ?? 0
     const selectedQuantity = quantities[product.id] || 1
-
     if (selectedQuantity > availableQuantity) {
       setOutOfStockError(`Only ${availableQuantity} left in stock.`)
       return
     }
-
     if (!bagItems.some((item) => item.id === product.id)) {
       addToBag(product, quantities[product.id] || 1)
     }
     setSelectedProduct(null)
   }
 
-  const handleCloseErrorModal = () => {
-    setOutOfStockError(null)
-  }
+  const handleCloseErrorModal = () => setOutOfStockError(null)
+  const handleCloseModal = () => setSelectedProduct(null)
 
-  const handleViewItem = (product) => {
-    setSelectedProduct(product)
-  }
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null)
-  }
-
-  if (loading) {
-    return <p className="loading">Loading products...</p>
-  }
-
-  if (error) {
-    return <p className="error">{error}</p>
-  }
+  if (loading) return <p className="loading">Loading products...</p>
+  if (error) return <p className="error">{error}</p>
 
   return (
     <div>
       <div className="product-list">
         {products.map((product) => (
-          <div key={product.id} className="product-card">
+          <div
+            key={product.id}
+            className="product-card"
+            onClick={() => setSelectedProduct(product)}
+          >
             <img
               src={product.images?.edges[0]?.node?.src}
               alt={product.title}
             />
-            <div className="product-info">
-              <div className="product-details">
-                <p className="product-title">{product.title}</p>
-                <p className="product-price">
-                  ${product.variants.edges[0]?.node.price}
-                </p>
-              </div>
-              <div className="product-actions">
-                <button
-                  className="view-item-button"
-                  onClick={() => handleViewItem(product)}
-                >
-                  View Item
-                </button>
-              </div>
+            <div className="product-details">
+              <p className="product-title">{product.title}</p>
+              <p className="product-price">
+                ${product.variants.edges[0]?.node.price}
+              </p>
             </div>
           </div>
         ))}
@@ -150,10 +124,12 @@ const ProductList = ({ addToBag, bagItems }) => {
               </div>
             </div>
             <div className="modal-details">
-              <h3>{selectedProduct.title}</h3>
-              <p className="product-price">
-                ${selectedProduct.variants.edges[0]?.node.price}
-              </p>
+              <div className='modal-info'>
+                <h3 className="product-title">{selectedProduct.title}</h3>
+                <h3 className="product-price">
+                  ${selectedProduct.variants.edges[0]?.node.price}
+                </h3>
+              </div>
               {bagItems.some((item) => item.id === selectedProduct.id) ? (
                 <Link to="/bag" className="view-item-in-bag">
                   View Item in Bag

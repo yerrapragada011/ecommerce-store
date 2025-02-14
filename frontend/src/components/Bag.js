@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Bag.css'
 
@@ -7,7 +7,18 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const [stockModalOpen, setStockModalOpen] = useState(false)
   const [selectedItemIndex, setSelectedItemIndex] = useState(null)
   const [stockErrorMessage, setStockErrorMessage] = useState('')
+  const [mainImage, setMainImage] = useState(null)
+  const [disabledButtons, setDisabledButtons] = useState({})
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (items.length > 0) {
+      const firstImage = items[0]?.images?.edges[0]?.node?.src
+      if (firstImage) {
+        setMainImage(firstImage)
+      }
+    }
+  }, [items])
 
   const totalPrice = items.reduce((sum, item) => {
     const price = item.variants.edges[0]?.node.price
@@ -72,9 +83,22 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     if (item.quantity + 1 > availableStock) {
       setStockErrorMessage(`Only ${availableStock} left in stock.`)
       setStockModalOpen(true)
+      setDisabledButtons((prev) => ({ ...prev, [index]: true }))
     } else {
       updateQuantity(index, item.quantity + 1)
     }
+  }
+
+  const handleQuantityDecrease = (index, item) => {
+    if (item.quantity > 1) {
+      updateQuantity(index, item.quantity - 1)
+
+      setDisabledButtons((prev) => ({ ...prev, [index]: false }))
+    }
+  }
+
+  const handleThumbnailClick = (imageSrc) => {
+    setMainImage(imageSrc)
   }
 
   return (
@@ -84,46 +108,71 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
       ) : (
         <div className="bag-items-container">
           <div className="bag-items">
-            {items.map((item, index) => (
-              <div key={index} className="bag-item">
-                <img src={item.images?.edges[0]?.node?.src} alt={item.title} />
-                <div className="bag-item-info">
-                  <div className="bag-item-details">
-                    <h3>{item.title}</h3>
-                    <p className="price">
-                      Price: ${item.variants.edges[0]?.node.price || 'N/A'}
-                    </p>
-                    <p>
-                      Quantity:{' '}
-                      <span key={item.quantity} className="value-update">
-                        {item.quantity}
-                      </span>
-                    </p>
+            {items.map((item, index) => {
+              const productImages = item.images?.edges || []
+              const mainProductImage = mainImage || productImages[0]?.node?.src
+
+              return (
+                <div key={index} className="bag-item">
+                  <div className="bag-item-image">
+                    <img
+                      src={mainProductImage}
+                      alt={item.title}
+                      className="bag-main-image"
+                    />
+                    <div className="thumbnail-container">
+                      {productImages.map((image, idx) => (
+                        <img
+                          key={idx}
+                          src={image.node.src}
+                          alt={`Thumbnail ${idx + 1}`}
+                          className={`thumbnail ${
+                            image.node.src === mainImage ? 'active' : ''
+                          }`}
+                          onClick={() => handleThumbnailClick(image.node.src)}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className="quantity-buttons">
-                    <button
-                      className="quantity-button"
-                      onClick={() => updateQuantity(index, item.quantity - 1)}
-                      disabled={item.quantity === 1}
-                    >
-                      -
-                    </button>
-                    <button
-                      className="quantity-button"
-                      onClick={() => handleQuantityIncrease(index, item)}
-                    >
-                      +
-                    </button>
-                    <button
-                      onClick={() => handleRemoveClick(index)}
-                      className="remove-button"
-                    >
-                      Remove
-                    </button>
+                  <div className="bag-item-info">
+                    <div className="bag-item-details">
+                      <h3>{item.title}</h3>
+                      <p className="price">
+                        Price: ${item.variants.edges[0]?.node.price || 'N/A'}
+                      </p>
+                      <p>
+                        Quantity:{' '}
+                        <span key={item.quantity} className="value-update">
+                          {item.quantity}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="quantity-buttons">
+                      <button
+                        className="quantity-button"
+                        onClick={() => handleQuantityDecrease(index, item)}
+                        disabled={item.quantity === 1}
+                      >
+                        -
+                      </button>
+                      <button
+                        className="quantity-button"
+                        onClick={() => handleQuantityIncrease(index, item)}
+                        disabled={disabledButtons[index]}
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => handleRemoveClick(index)}
+                        className="remove-button"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
           <div className="checkout-container">
             <div className="total-price">

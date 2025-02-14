@@ -20,9 +20,26 @@
   background-color: #007bff;
   padding: 8px 12px;
   border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
   transition: background-color 0.3s ease;
 }
 
 .bag-button:hover {
   background-color: #0056b3;
+}
+
+.bag-icon {
+  display: none;
+  font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  .bag-text {
+    display: none;
+  }
+  .bag-icon {
+    display: inline;
+  }
 }

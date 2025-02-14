@@ -22,7 +22,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 100px;
   padding: 20px;
 }
 
@@ -32,18 +32,20 @@
 
 .bag-items {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 16px;
   justify-content: center;
 }
 
 .bag-item {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
   background-color: white;
   border-radius: 10px;
   padding: 12px 18px;
-  width: 180px;
+  width: 450px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
-  text-align: center;
   animation: fadeInFromTop 0.5s ease-out;
   transition: transform 0.3s ease;
 }
@@ -52,11 +54,22 @@
   transform: translateY(5px);
 }
 
-.bag-item img {
+.bag-main-image {
   width: 100%;
-  height: 150px;
+  height: 250px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.bag-item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.bag-item-image {
+  display: flex;
+  flex-direction: column;
 }
 
 .checkout-button {
@@ -77,10 +90,6 @@
 .checkout-container {
   display: flex;
   gap: 20px;
-}
-
-.checkout-button-container {
-  display: flex;
   align-items: center;
 }
 
@@ -89,6 +98,7 @@
   gap: 10px;
   font-size: 24px;
   color: white;
+  text-shadow: 4px 4px 9px rgba(0, 0, 0, 0.6);
 }
 
 .quantity-buttons {
@@ -109,8 +119,8 @@
   transition: background-color 0.3s ease;
 }
 
-.quantity-buttons button:disabled {
-  background-color: rgba(200, 200, 200, 0.3);
+.quantity-button:disabled {
+  background-color: rgba(200, 200, 200, 0.8);
   cursor: not-allowed;
 }
 
@@ -189,11 +199,36 @@
   color: white;
 }
 
+.thumbnail-container {
+  display: flex;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-right: 5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.3s;
+}
+
+.thumbnail.active {
+  border-color: gray;
+}
+
 @media (max-width: 768px) {
   .bag-item {
     padding: 20px;
-    width: 100%;
+    width: 90%;
+    text-align: center;
   }
+
+  .bag-item:hover {
+    transform: none;
+  }
+
   .checkout-container {
     flex-direction: column;
     align-items: center;
