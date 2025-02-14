@@ -22,7 +22,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 100px;
+  gap: 20px;
   padding: 20px;
 }
 
@@ -35,6 +35,7 @@
   flex-direction: column;
   gap: 16px;
   justify-content: center;
+  margin-bottom: 80px;
 }
 
 .bag-item {
@@ -218,6 +219,19 @@
   border-color: gray;
 }
 
+.checkout-note {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+}
+
+.star {
+  color: red;
+}
+
 @media (max-width: 768px) {
   .bag-item {
     padding: 20px;
@@ -232,6 +246,6 @@
   .checkout-container {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
   }
 }

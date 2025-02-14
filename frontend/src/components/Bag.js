@@ -182,6 +182,13 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
               )
             })}
           </div>
+          <div className="checkout-note">
+            <p className="star">* </p>
+            <span>
+              Please note that the final price does not include shipping and
+              handling fees.
+            </span>
+          </div>
           <div className="checkout-container">
             <div className="total-price">
               <p>Total: </p>
