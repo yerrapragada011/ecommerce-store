@@ -8,6 +8,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(null)
   const [stockErrorMessage, setStockErrorMessage] = useState('')
   const [mainImage, setMainImage] = useState(null)
+  const [mainImages, setMainImages] = useState({})
   const [disabledButtons, setDisabledButtons] = useState({})
   const navigate = useNavigate()
 
@@ -18,6 +19,17 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
         setMainImage(firstImage)
       }
     }
+  }, [items])
+
+  useEffect(() => {
+    const initialImages = {}
+    items.forEach((item, index) => {
+      const firstImage = item.images?.edges[0]?.node?.src
+      if (firstImage) {
+        initialImages[index] = firstImage
+      }
+    })
+    setMainImages(initialImages)
   }, [items])
 
   const totalPrice = items.reduce((sum, item) => {
@@ -97,8 +109,11 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     }
   }
 
-  const handleThumbnailClick = (imageSrc) => {
-    setMainImage(imageSrc)
+  const handleThumbnailClick = (imageSrc, index) => {
+    setMainImages((prev) => ({
+      ...prev,
+      [index]: imageSrc,
+    }))
   }
 
   return (
@@ -110,7 +125,8 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
           <div className="bag-items">
             {items.map((item, index) => {
               const productImages = item.images?.edges || []
-              const mainProductImage = mainImage || productImages[0]?.node?.src
+              const mainProductImage =
+                mainImages[index] || productImages[0]?.node?.src
 
               return (
                 <div key={index} className="bag-item">
@@ -129,7 +145,9 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                           className={`thumbnail ${
                             image.node.src === mainImage ? 'active' : ''
                           }`}
-                          onClick={() => handleThumbnailClick(image.node.src)}
+                          onClick={() =>
+                            handleThumbnailClick(image.node.src, index)
+                          }
                         />
                       ))}
                     </div>
