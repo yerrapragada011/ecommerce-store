@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import './ProductList.css'
 
 const ProductList = ({ addToBag, bagItems }) => {
   const [products, setProducts] = useState([])
   const [quantities, setQuantities] = useState({})
+  const [selectedSize, setSelectedSize] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
@@ -61,17 +61,49 @@ const ProductList = ({ addToBag, bagItems }) => {
     }
   }
 
+  const handleSizeChange = (id, size) => {
+    setSelectedSize((prev) => ({
+      ...prev,
+      [id]: size,
+    }))
+  }
+
   const handleAddToBag = (product) => {
-    const availableQuantity =
-      product.variants?.[0]?.node?.inventoryQuantity ?? 0
     const selectedQuantity = quantities[product.id] || 1
+    const selectedProductSize = selectedSize[product.id]
+
+    if (!selectedProductSize || selectedProductSize === '-') {
+      setOutOfStockError('Please select a size.')
+      return
+    }
+
+    const selectedVariant = product.variants?.find((variant) =>
+      variant.node.selectedOptions.some(
+        (option) =>
+          option.name.toLowerCase() === 'size' &&
+          option.value.toLowerCase() === selectedProductSize.toLowerCase()
+      )
+    )
+
+    if (!selectedVariant) {
+      setOutOfStockError(
+        `Size ${selectedProductSize} is not available for this product.`
+      )
+      return
+    }
+
+    const selectedVariantId = selectedVariant.node.id
+    let availableQuantity = selectedVariant.node.inventoryQuantity
+
+    console.log('Available Quantity:', availableQuantity)
+
     if (selectedQuantity > availableQuantity) {
       setOutOfStockError(`Only ${availableQuantity} left in stock.`)
       return
     }
-    if (!bagItems.some((item) => item.id === product.id)) {
-      addToBag(product, selectedQuantity)
-    }
+
+    addToBag(product, selectedVariantId, selectedProductSize, selectedQuantity)
+    availableQuantity -= selectedQuantity
     setSelectedProduct(null)
   }
 
@@ -103,18 +135,13 @@ const ProductList = ({ addToBag, bagItems }) => {
               src={product.images?.[0]?.node?.src || 'default-image-url'}
               alt={product.title}
             />
-
             <div className="product-details">
-              <p className="product-title">{product.title}</p>
-              <p className="product-price">
-                ${product.variants?.[0]?.node?.price || 'N/A'}
-              </p>
-              <p className="product-size">
-                Size: {getOptionValue(product, 'Size')}
-              </p>
-              <p className="product-color">
-                Color: {getOptionValue(product, 'Color')}
-              </p>
+              <div className="product-info">
+                <h3 className="product-title">{product.title}</h3>
+                <h3 className="product-price">
+                  ${product.variants?.[0]?.node?.price || 'N/A'}
+                </h3>
+              </div>
             </div>
           </div>
         ))}
@@ -154,39 +181,53 @@ const ProductList = ({ addToBag, bagItems }) => {
               )}
             </div>
             <div className="modal-details">
-              <h3 className="product-title">{selectedProduct.title}</h3>
-              <h3 className="product-price">
-                ${selectedProduct.variants?.[0]?.node?.price}
-              </h3>
-              <p className="product-size">
-                Size: {getOptionValue(selectedProduct, 'Size')}
-              </p>
-              <p className="product-color">
-                Color: {getOptionValue(selectedProduct, 'Color')}
-              </p>
-              {bagItems.some((item) => item.id === selectedProduct.id) ? (
-                <Link to="/bag" className="view-item-in-bag">
-                  View Item in Bag
-                </Link>
-              ) : (
-                <div className="quantity-container">
-                  <input
-                    type="text"
-                    placeholder="Quantity"
-                    value={quantities[selectedProduct.id] ?? 1}
-                    onChange={(e) =>
-                      handleQuantityChange(selectedProduct.id, e.target.value)
-                    }
-                    className="quantity-input"
-                  />
-                  <button
-                    className="add-to-bag"
-                    onClick={() => handleAddToBag(selectedProduct)}
-                  >
-                    Add to Bag
-                  </button>
+              <div className="product-details">
+                <div className="product-info">
+                  <h3 className="product-title">{selectedProduct.title}</h3>
+                  <h3 className="product-price">
+                    ${selectedProduct.variants?.[0]?.node?.price}
+                  </h3>
                 </div>
-              )}
+                <div className="product-options">
+                  <label className="product-size">
+                    Size:{' '}
+                    <select
+                      className="size-select"
+                      value={selectedSize[selectedProduct.id] || ''}
+                      onChange={(e) =>
+                        handleSizeChange(selectedProduct.id, e.target.value)
+                      }
+                      required
+                    >
+                      <option value="">-</option>
+                      <option value="Small">Small</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Large">Large</option>
+                    </select>
+                  </label>
+                  <p className="product-color">
+                    Color: {getOptionValue(selectedProduct, 'Color')}
+                  </p>
+                </div>
+              </div>
+
+              <div className="quantity-container">
+                <input
+                  type="text"
+                  placeholder="Quantity"
+                  value={quantities[selectedProduct.id] ?? 1}
+                  onChange={(e) =>
+                    handleQuantityChange(selectedProduct.id, e.target.value)
+                  }
+                  className="quantity-input"
+                />
+                <button
+                  className="add-to-bag"
+                  onClick={() => handleAddToBag(selectedProduct)}
+                >
+                  Add to Bag
+                </button>
+              </div>
             </div>
           </div>
         </div>

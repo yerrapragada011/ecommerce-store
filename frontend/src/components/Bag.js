@@ -4,19 +4,17 @@ import './Bag.css'
 
 const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const [removeModalOpen, setRemoveModalOpen] = useState(false)
-  const [stockModalOpen, setStockModalOpen] = useState(false)
-  const [selectedItemIndex, setSelectedItemIndex] = useState(null)
-  const [stockErrorMessage, setStockErrorMessage] = useState('')
+  const [selectedVariantId, setSelectedVariantId] = useState(null)
+  const [selectedSize, setSelectedSize] = useState(null)
   const [mainImages, setMainImages] = useState({})
-  const [disabledButtons, setDisabledButtons] = useState({})
   const navigate = useNavigate()
 
   useEffect(() => {
     const initialImages = {}
-    items.forEach((item, index) => {
+    items.forEach((item) => {
       const firstImage = item.images?.[0]?.node?.src
       if (firstImage) {
-        initialImages[index] = firstImage
+        initialImages[item.variants?.[0]?.node.id] = firstImage
       }
     })
     setMainImages(initialImages)
@@ -60,13 +58,24 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     }
   }
 
-  const handleRemoveClick = (index) => {
-    setSelectedItemIndex(index)
+  const handleQuantityIncrease = (item) => {
+    updateQuantity(item.variantId, item.size, item.quantity + 1)
+  }
+
+  const handleQuantityDecrease = (item) => {
+    if (item.quantity > 1) {
+      updateQuantity(item.variantId, item.size, item.quantity - 1)
+    }
+  }
+
+  const handleRemoveClick = (item) => {
+    setSelectedVariantId(item.variantId)
+    setSelectedSize(item.size)
     setRemoveModalOpen(true)
   }
 
   const confirmRemoval = () => {
-    removeFromBag(selectedItemIndex)
+    removeFromBag(selectedVariantId, selectedSize)
     setRemoveModalOpen(false)
 
     if (items.length === 1) {
@@ -76,29 +85,8 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
   const cancelRemoval = () => {
     setRemoveModalOpen(false)
-    setSelectedItemIndex(null)
-  }
-
-  const handleQuantityIncrease = (index, item) => {
-    const availableStock = item.variants?.[0]?.node?.inventoryQuantity || 10
-
-    if (item.quantity + 1 > availableStock) {
-      setStockErrorMessage(
-        `Only (${availableStock}) of ${item.title} left in stock.`
-      )
-      setStockModalOpen(true)
-      setDisabledButtons((prev) => ({ ...prev, [index]: true }))
-    } else {
-      updateQuantity(index, item.quantity + 1)
-    }
-  }
-
-  const handleQuantityDecrease = (index, item) => {
-    if (item.quantity > 1) {
-      updateQuantity(index, item.quantity - 1)
-
-      setDisabledButtons((prev) => ({ ...prev, [index]: false }))
-    }
+    setSelectedVariantId(null)
+    setSelectedSize(null)
   }
 
   const handleThumbnailClick = (imageSrc, index) => {
@@ -108,6 +96,15 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     }))
   }
 
+  const getOptionValue = (item, optionName) => {
+    const variant = item.variants?.[0]?.node
+    return (
+      variant?.selectedOptions?.find(
+        (opt) => opt.name.toLowerCase() === optionName.toLowerCase()
+      )?.value || 'N/A'
+    )
+  }
+
   return (
     <div className="bag-container">
       {items.length === 0 ? (
@@ -115,13 +112,15 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
       ) : (
         <div className="bag-items-container">
           <div className="bag-items">
-            {items.map((item, index) => {
+            {items.map((item) => {
+              const variant = item.variants?.[0]
+              const variantId = variant.node.id
               const productImages = item.images || []
               const mainProductImage =
-                mainImages[index] || productImages[0]?.node?.src
+                mainImages[variantId] || productImages[0]?.node?.src
 
               return (
-                <div key={index} className="bag-item">
+                <div key={variantId} className="bag-item">
                   <div className="bag-item-image">
                     <img
                       src={mainProductImage}
@@ -135,10 +134,12 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                           src={image.node.src}
                           alt={`Thumbnail ${idx + 1}`}
                           className={`thumbnail ${
-                            image.node.src === mainImages[index] ? 'active' : ''
+                            image.node.src === mainImages[variantId]
+                              ? 'active'
+                              : ''
                           }`}
                           onClick={() =>
-                            handleThumbnailClick(image.node.src, index)
+                            handleThumbnailClick(image.node.src, variantId)
                           }
                         />
                       ))}
@@ -154,24 +155,40 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                         Quantity:{' '}
                         <span className="value-update">{item.quantity}</span>
                       </p>
+                      <p>Size: {item.size || getOptionValue(item, 'Size')}</p>
+
+                      <p className="product-color">
+                        Color: {getOptionValue(item, 'Color')}
+                      </p>
                     </div>
                     <div className="quantity-buttons">
                       <button
                         className="quantity-button"
-                        onClick={() => handleQuantityDecrease(index, item)}
+                        onClick={() => handleQuantityDecrease(item)}
                         disabled={item.quantity === 1}
                       >
                         -
                       </button>
+
                       <button
                         className="quantity-button"
-                        onClick={() => handleQuantityIncrease(index, item)}
-                        disabled={disabledButtons[index]}
+                        onClick={() => handleQuantityIncrease(item)}
+                        disabled={
+                          item.quantity >=
+                          (item.variants?.find((variant) =>
+                            variant.node.selectedOptions.some(
+                              (option) =>
+                                option.name === 'Size' &&
+                                option.value === item.size
+                            )
+                          )?.node?.inventoryQuantity || 10)
+                        }
                       >
                         +
                       </button>
+
                       <button
-                        onClick={() => handleRemoveClick(index)}
+                        onClick={() => handleRemoveClick(item)}
                         className="remove-button"
                       >
                         Remove
@@ -214,17 +231,6 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                 Yes
               </button>
               <button onClick={cancelRemoval}>No</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {stockModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <p>{stockErrorMessage}</p>
-            <div className="modal-buttons">
-              <button onClick={() => setStockModalOpen(false)}>OK</button>
             </div>
           </div>
         </div>

@@ -14,43 +14,54 @@ const App = () => {
     localStorage.setItem('bagItems', JSON.stringify(bagItems))
   }, [bagItems])
 
-  const addToBag = (product, quantity) => {
+  const addToBag = (product, selectedVariantId, selectedSize, quantity) => {
+    if (!selectedVariantId) {
+      console.error('Selected Variant ID is missing!')
+      return
+    }
+
     setBagItems((prevItems) => {
       const existingProductIndex = prevItems.findIndex(
-        (item) => item.id === product.id
+        (item) =>
+          item.variantId === selectedVariantId && item.size === selectedSize
       )
 
       if (existingProductIndex !== -1) {
-        const updatedItems = prevItems.map((item, index) =>
+        return prevItems.map((item, index) =>
           index === existingProductIndex
             ? { ...item, quantity: item.quantity + quantity }
             : item
         )
-        return updatedItems
       } else {
-        return [...prevItems, { ...product, quantity }]
+        return [
+          ...prevItems,
+          {
+            ...product,
+            variantId: selectedVariantId,
+            size: selectedSize,
+            quantity,
+          },
+        ]
       }
     })
   }
 
-  const updateQuantity = (index, quantity) => {
-    setBagItems((prevItems) => {
-      const updatedItems = [...prevItems]
-      if (quantity > 0) {
-        updatedItems[index].quantity = quantity
-      } else {
-        updatedItems.splice(index, 1)
-      }
-      return updatedItems
-    })
+  const updateQuantity = (variantId, size, newQuantity) => {
+    setBagItems((prevItems) =>
+      prevItems.map((item) =>
+        item.variantId === variantId && item.size === size
+          ? { ...item, quantity: newQuantity }
+          : item
+      )
+    )
   }
 
-  const removeFromBag = (index) => {
-    setBagItems((prevItems) => {
-      const updatedItems = [...prevItems]
-      updatedItems.splice(index, 1)
-      return updatedItems
-    })
+  const removeFromBag = (variantId, size) => {
+    setBagItems((prevItems) =>
+      prevItems.filter(
+        (item) => !(item.variantId === variantId && item.size === size)
+      )
+    )
   }
 
   return (
