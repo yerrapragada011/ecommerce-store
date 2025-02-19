@@ -14,7 +14,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   useEffect(() => {
     const initialImages = {}
     items.forEach((item, index) => {
-      const firstImage = item.images?.edges[0]?.node?.src
+      const firstImage = item.images?.[0]?.node?.src
       if (firstImage) {
         initialImages[index] = firstImage
       }
@@ -23,8 +23,8 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   }, [items])
 
   const totalPrice = items.reduce((sum, item) => {
-    const price = item.variants.edges[0]?.node.price
-      ? parseFloat(item.variants.edges[0]?.node.price)
+    const price = item.variants?.[0]?.node.price
+      ? parseFloat(item.variants?.[0]?.node.price)
       : 0
     return sum + price * item.quantity
   }, 0)
@@ -32,7 +32,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   const proceedToCheckout = async () => {
     try {
       const lineItems = items.map((item) => ({
-        variant_id: item.variants.edges[0]?.node.id,
+        variant_id: item.variants?.[0]?.node.id,
         quantity: item.quantity,
       }))
 
@@ -80,7 +80,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   }
 
   const handleQuantityIncrease = (index, item) => {
-    const availableStock = item.variants.edges[0]?.node?.inventoryQuantity || 10
+    const availableStock = item.variants?.[0]?.node?.inventoryQuantity || 10
 
     if (item.quantity + 1 > availableStock) {
       setStockErrorMessage(
@@ -116,7 +116,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
         <div className="bag-items-container">
           <div className="bag-items">
             {items.map((item, index) => {
-              const productImages = item.images?.edges || []
+              const productImages = item.images || []
               const mainProductImage =
                 mainImages[index] || productImages[0]?.node?.src
 
@@ -148,7 +148,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                     <div className="bag-item-details">
                       <h3>{item.title}</h3>
                       <p className="price">
-                        Price: ${item.variants.edges[0]?.node.price || 'N/A'}
+                        Price: ${item.variants?.[0]?.node.price || 'N/A'}
                       </p>
                       <p>
                         Quantity:{' '}
