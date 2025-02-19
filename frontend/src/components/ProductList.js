@@ -105,6 +105,7 @@ const ProductList = ({ addToBag, bagItems }) => {
     addToBag(product, selectedVariantId, selectedProductSize, selectedQuantity)
     availableQuantity -= selectedQuantity
     setSelectedProduct(null)
+    setSelectedSize({})
   }
 
   const getOptionValue = (product, optionName) => {
@@ -117,7 +118,10 @@ const ProductList = ({ addToBag, bagItems }) => {
   }
 
   const handleCloseErrorModal = () => setOutOfStockError(null)
-  const handleCloseModal = () => setSelectedProduct(null)
+  const handleCloseModal = () => {
+    setSelectedProduct(null)
+    setSelectedSize({})
+  }
 
   if (loading) return <p className="loading">Loading products...</p>
   if (error) return <p className="error">{error}</p>
@@ -191,19 +195,44 @@ const ProductList = ({ addToBag, bagItems }) => {
                 <div className="product-options">
                   <label className="product-size">
                     Size:{' '}
-                    <select
-                      className="size-select"
-                      value={selectedSize[selectedProduct.id] || ''}
-                      onChange={(e) =>
-                        handleSizeChange(selectedProduct.id, e.target.value)
-                      }
-                      required
-                    >
-                      <option value="">-</option>
-                      <option value="Small">Small</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Large">Large</option>
-                    </select>
+                    <div className="size-select">
+                      <button
+                        className={`size-option ${
+                          selectedSize[selectedProduct.id] === 'Small'
+                            ? 'selected'
+                            : ''
+                        }`}
+                        onClick={() =>
+                          handleSizeChange(selectedProduct.id, 'Small')
+                        }
+                      >
+                        Small
+                      </button>
+                      <button
+                        className={`size-option ${
+                          selectedSize[selectedProduct.id] === 'Medium'
+                            ? 'selected'
+                            : ''
+                        }`}
+                        onClick={() =>
+                          handleSizeChange(selectedProduct.id, 'Medium')
+                        }
+                      >
+                        Medium
+                      </button>
+                      <button
+                        className={`size-option ${
+                          selectedSize[selectedProduct.id] === 'Large'
+                            ? 'selected'
+                            : ''
+                        }`}
+                        onClick={() =>
+                          handleSizeChange(selectedProduct.id, 'Large')
+                        }
+                      >
+                        Large
+                      </button>
+                    </div>
                   </label>
                   <p className="product-color">
                     Color: {getOptionValue(selectedProduct, 'Color')}
