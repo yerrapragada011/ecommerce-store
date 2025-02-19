@@ -7,25 +7,45 @@ const getProducts = async (req, res) => {
     const client = getGraphqlClient(shop)
 
     const query = `
-      query {
-        products(first: 10) {
-          edges {
-            node {
-              id
-              title
-              images(first: 5) {
-                edges {
-                  node {
-                    src
-                  }
+    query {
+      products(first: 10) {
+        edges {
+          node {
+            id
+            title
+            images(first: 5) {
+              edges {
+                node {
+                  src
+                  altText
                 }
               }
-              variants(first: 5) {
-                edges {
-                  node {
-                    id
-                    price
-                    inventoryQuantity
+            }
+            metafields(namespace: "shopify", first: 5) {
+              edges {
+                node {
+                  key
+                  value
+                }
+              }
+            }
+            variants(first: 5) {
+              edges {
+                node {
+                  id
+                  price
+                  inventoryQuantity
+                  selectedOptions {  # ✅ Add this to get Size & Color
+                    name
+                    value
+                  }
+                  metafields(namespace: "shopify", first: 5) {
+                    edges {
+                      node {
+                        key
+                        value
+                      }
+                    }
                   }
                 }
               }
@@ -33,7 +53,8 @@ const getProducts = async (req, res) => {
           }
         }
       }
-    `
+    }
+`
 
     const response = await client.request(query)
 
@@ -42,7 +63,35 @@ const getProducts = async (req, res) => {
     }
 
     const products =
-      response?.data?.products?.edges?.map((edge) => edge.node) || []
+      response?.data?.products?.edges?.map((edge) => {
+        const product = edge.node
+
+        const variants = product.variants?.edges || []
+
+        variants.forEach((variantEdge) => {
+          const variant = variantEdge.node
+          const metafields = variant.metafields?.edges || []
+
+          if (metafields.length > 0) {
+            metafields.forEach((metafieldEdge) => {
+              const metafield = metafieldEdge.node
+              console.log('Metafield Key:', metafield.key)
+              console.log('Metafield Value:', metafield.value)
+            })
+          } else {
+            console.log('No metafields available for this variant.')
+          }
+        })
+
+        const images = product.images?.edges || []
+        console.log('Images:', images)
+
+        return {
+          ...product,
+          variants: variants,
+          images,
+        }
+      }) || [] 
 
     return res.json({ products })
   } catch (error) {

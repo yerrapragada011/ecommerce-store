@@ -21,12 +21,17 @@ const ProductList = ({ addToBag, bagItems }) => {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-        const availableProducts = data.products.filter((product) => {
-          const inventory =
-            product.variants.edges[0]?.node?.inventoryQuantity ?? 0
-          return inventory > 0
-        })
-        setProducts(availableProducts)
+
+        if (Array.isArray(data.products)) {
+          const availableProducts = data.products.filter((product) => {
+            const inventory =
+              product.variants?.[0]?.node?.inventoryQuantity ?? 0
+            return inventory > 0
+          })
+          setProducts(availableProducts)
+        } else {
+          throw new Error('No products found or incorrect data format')
+        }
       } catch (error) {
         console.error('Error fetching products:', error)
         setError('Failed to load products. Please try again later.')
@@ -38,8 +43,12 @@ const ProductList = ({ addToBag, bagItems }) => {
   }, [])
 
   useEffect(() => {
-    if (selectedProduct && selectedProduct.images.edges.length > 0) {
-      setMainImage(selectedProduct.images.edges[0]?.node.src)
+    if (
+      selectedProduct &&
+      selectedProduct.images &&
+      selectedProduct.images.length > 0
+    ) {
+      setMainImage(selectedProduct.images?.[0]?.node?.src)
     }
   }, [selectedProduct])
 
@@ -54,16 +63,25 @@ const ProductList = ({ addToBag, bagItems }) => {
 
   const handleAddToBag = (product) => {
     const availableQuantity =
-      product.variants.edges[0]?.node?.inventoryQuantity ?? 0
+      product.variants?.[0]?.node?.inventoryQuantity ?? 0
     const selectedQuantity = quantities[product.id] || 1
     if (selectedQuantity > availableQuantity) {
       setOutOfStockError(`Only ${availableQuantity} left in stock.`)
       return
     }
     if (!bagItems.some((item) => item.id === product.id)) {
-      addToBag(product, quantities[product.id] || 1)
+      addToBag(product, selectedQuantity)
     }
     setSelectedProduct(null)
+  }
+
+  const getOptionValue = (product, optionName) => {
+    const variant = product.variants?.[0]?.node
+    return (
+      variant?.selectedOptions?.find(
+        (opt) => opt.name.toLowerCase() === optionName.toLowerCase()
+      )?.value || 'N/A'
+    )
   }
 
   const handleCloseErrorModal = () => setOutOfStockError(null)
@@ -82,13 +100,20 @@ const ProductList = ({ addToBag, bagItems }) => {
             onClick={() => setSelectedProduct(product)}
           >
             <img
-              src={product.images?.edges[0]?.node?.src}
+              src={product.images?.[0]?.node?.src || 'default-image-url'}
               alt={product.title}
             />
+
             <div className="product-details">
               <p className="product-title">{product.title}</p>
               <p className="product-price">
-                ${product.variants.edges[0]?.node.price}
+                ${product.variants?.[0]?.node?.price || 'N/A'}
+              </p>
+              <p className="product-size">
+                Size: {getOptionValue(product, 'Size')}
+              </p>
+              <p className="product-color">
+                Color: {getOptionValue(product, 'Color')}
               </p>
             </div>
           </div>
@@ -104,32 +129,41 @@ const ProductList = ({ addToBag, bagItems }) => {
             <div className="image-gallery">
               {mainImage && (
                 <img
-                  src={mainImage}
+                  src={
+                    selectedProduct.images?.[0]?.node?.src ||
+                    'default-image-url'
+                  }
                   alt={selectedProduct?.title}
                   className="modal-image"
                 />
               )}
-              <div className="thumbnail-container">
-                {selectedProduct?.images?.edges.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image.node.src}
-                    alt={`${selectedProduct.title} ${index + 1}`}
-                    className={`thumbnail ${
-                      image.node.src === mainImage ? 'active' : ''
-                    }`}
-                    onClick={() => setMainImage(image.node.src)}
-                  />
-                ))}
-              </div>
+              {selectedProduct?.images?.length > 0 && (
+                <div className="thumbnail-container">
+                  {selectedProduct.images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image.node?.src || 'default-image-url'}
+                      alt={`${selectedProduct.title} ${index + 1}`}
+                      className={`thumbnail ${
+                        image.node?.src === mainImage ? 'active' : ''
+                      }`}
+                      onClick={() => setMainImage(image.node?.src)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
             <div className="modal-details">
-              <div className='modal-info'>
-                <h3 className="product-title">{selectedProduct.title}</h3>
-                <h3 className="product-price">
-                  ${selectedProduct.variants.edges[0]?.node.price}
-                </h3>
-              </div>
+              <h3 className="product-title">{selectedProduct.title}</h3>
+              <h3 className="product-price">
+                ${selectedProduct.variants?.[0]?.node?.price}
+              </h3>
+              <p className="product-size">
+                Size: {getOptionValue(selectedProduct, 'Size')}
+              </p>
+              <p className="product-color">
+                Color: {getOptionValue(selectedProduct, 'Color')}
+              </p>
               {bagItems.some((item) => item.id === selectedProduct.id) ? (
                 <Link to="/bag" className="view-item-in-bag">
                   View Item in Bag
