@@ -102,8 +102,29 @@ const ProductList = ({ addToBag, bagItems }) => {
       return
     }
 
+    setProducts((prevProducts) =>
+      prevProducts.map((p) =>
+        p.id === product.id
+          ? {
+              ...p,
+              variants: p.variants.map((variant) =>
+                variant.node.id === selectedVariantId
+                  ? {
+                      ...variant,
+                      node: {
+                        ...variant.node,
+                        inventoryQuantity: availableQuantity - selectedQuantity,
+                      },
+                    }
+                  : variant
+              ),
+            }
+          : p
+      )
+    )
+
     addToBag(product, selectedVariantId, selectedProductSize, selectedQuantity)
-    availableQuantity -= selectedQuantity
+
     setSelectedProduct(null)
     setSelectedSize({})
   }
