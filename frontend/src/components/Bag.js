@@ -12,27 +12,36 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   useEffect(() => {
     const initialImages = {}
     items.forEach((item) => {
-      const firstImage = item.images?.[0]?.node?.src
-      if (firstImage) {
-        initialImages[item.variants?.[0]?.node.id] = firstImage
-      }
+      item.variants.forEach((variant) => {
+        initialImages[variant.node.id] = item.images?.[0]?.node?.src || ''
+      })
     })
     setMainImages(initialImages)
   }, [items])
 
   const totalPrice = items.reduce((sum, item) => {
-    const price = item.variants?.[0]?.node.price
-      ? parseFloat(item.variants?.[0]?.node.price)
-      : 0
+    const variant = item.variants.find((v) =>
+      v.node.selectedOptions.some(
+        (o) => o.name === 'Size' && o.value === item.size
+      )
+    )
+    const price = variant?.node.price ? parseFloat(variant.node.price) : 0
     return sum + price * item.quantity
   }, 0)
 
   const proceedToCheckout = async () => {
     try {
-      const lineItems = items.map((item) => ({
-        variant_id: item.variants?.[0]?.node.id,
-        quantity: item.quantity,
-      }))
+      const lineItems = items.map((item) => {
+        const variant = item.variants.find((v) =>
+          v.node.selectedOptions.some(
+            (o) => o.name === 'Size' && o.value === item.size
+          )
+        )
+        return {
+          variant_id: variant.node.id,
+          quantity: item.quantity,
+        }
+      })
 
       const response = await fetch(
         'http://localhost:8000/api/shopify/checkout',
@@ -98,11 +107,10 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
   const getOptionValue = (item, optionName) => {
     const variant = item.variants?.[0]?.node
-    return (
-      variant?.selectedOptions?.find(
-        (opt) => opt.name.toLowerCase() === optionName.toLowerCase()
-      )?.value || 'N/A'
+    const option = variant?.selectedOptions?.find(
+      (opt) => opt.name.toLowerCase() === optionName.toLowerCase()
     )
+    return option ? option.value : 'N/A'
   }
 
   return (
@@ -113,14 +121,19 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
         <div className="bag-items-container">
           <div className="bag-items">
             {items.map((item) => {
-              const variant = item.variants?.[0]
-              const variantId = variant.node.id
+              const variant = item.variants.find((v) =>
+                v.node.selectedOptions.some(
+                  (o) => o.name === 'Size' && o.value === item.size
+                )
+              )
+              const variantId = variant?.node.id
               const productImages = item.images || []
               const mainProductImage =
                 mainImages[variantId] || productImages[0]?.node?.src
 
               return (
                 <div key={`${variantId}-${item.size}`} className="bag-item">
+                  {console.log(`${variantId}-${item.size}`)}
                   <div className="bag-item-image">
                     <img
                       src={mainProductImage}
