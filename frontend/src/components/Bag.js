@@ -120,7 +120,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                 mainImages[variantId] || productImages[0]?.node?.src
 
               return (
-                <div key={variantId} className="bag-item">
+                <div key={`${variantId}-${item.size}`} className="bag-item">
                   <div className="bag-item-image">
                     <img
                       src={mainProductImage}
