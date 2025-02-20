@@ -35,7 +35,7 @@ const getProducts = async (req, res) => {
                   id
                   price
                   inventoryQuantity
-                  selectedOptions {  # ✅ Add this to get Size & Color
+                  selectedOptions {
                     name
                     value
                   }
@@ -68,30 +68,14 @@ const getProducts = async (req, res) => {
 
         const variants = product.variants?.edges || []
 
-        variants.forEach((variantEdge) => {
-          const variant = variantEdge.node
-          const metafields = variant.metafields?.edges || []
-
-          if (metafields.length > 0) {
-            metafields.forEach((metafieldEdge) => {
-              const metafield = metafieldEdge.node
-              console.log('Metafield Key:', metafield.key)
-              console.log('Metafield Value:', metafield.value)
-            })
-          } else {
-            console.log('No metafields available for this variant.')
-          }
-        })
-
         const images = product.images?.edges || []
-        console.log('Images:', images)
 
         return {
           ...product,
           variants: variants,
           images,
         }
-      }) || [] 
+      }) || []
 
     return res.json({ products })
   } catch (error) {
