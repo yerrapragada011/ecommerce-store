@@ -8,7 +8,6 @@ import {
 import ProductList from './components/ProductList'
 import Bag from './components/Bag'
 import Nav from './components/Nav'
-import OTPLogin from './components/OTPLogin'
 import Account from './components/Account'
 import './App.css'
 
@@ -90,7 +89,6 @@ const AppContent = () => {
             />
           }
         />
-        <Route path="/login" element={<OTPLogin />} />
         <Route path="/account" element={<Account />} />
       </Routes>
     </>

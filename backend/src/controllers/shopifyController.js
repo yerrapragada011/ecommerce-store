@@ -1,6 +1,5 @@
 require('dotenv').config()
-const crypto = require('crypto')
-const jwt = require('jsonwebtoken')
+const axios = require('axios')
 const {
   getGraphqlClient,
   getAdminGraphqlClient,
@@ -142,137 +141,38 @@ const createCheckout = async (req, res) => {
   }
 }
 
-const OTP_EXPIRATION = '10m'
-
-const requestOtp = async (req, res) => {
+const getAccountCallback = async (req, res) => {
   try {
-    const { email } = req.body
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required.' })
-    }
-  
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    const { code, shop } = req.query
 
-    const payload = { email, otp }
-
-    const otpToken = jwt.sign(payload, process.env.OTP_SECRET, {
-      expiresIn: OTP_EXPIRATION,
-    })
-
-    console.log(`Sending OTP ${otp} to email: ${email}`)
-
-    res.status(200).json({ message: 'OTP sent to email.', otpToken })
-  } catch (error) {
-    console.error('Error requesting OTP:', error.message)
-    res.status(500).json({ error: 'Failed to request OTP.' })
-  }
-}
-
-const verifyOtp = async (req, res) => {
-  try {
-    const { email, otp, otpToken } = req.body
-    if (!email || !otp || !otpToken) {
+    if (!code || !shop) {
       return res
         .status(400)
-        .json({ error: 'Email, OTP, and token are required.' })
+        .json({ error: 'Missing code or shop in callback request' })
     }
 
-    let decoded
-    try {
-      decoded = jwt.verify(otpToken, process.env.OTP_SECRET)
-    } catch (err) {
-      return res.status(400).json({ error: 'Invalid or expired OTP token.' })
-    }
-
-    if (decoded.email !== email || decoded.otp !== otp) {
-      return res.status(400).json({ error: 'Invalid OTP.' })
-    }
-
-    const tempPassword = crypto.randomBytes(8).toString('hex')
-
-    const shop = process.env.SHOPIFY_STORE_URL
-    const client = getGraphqlClient(shop)
-
-    let loginQuery = `
-      mutation {
-        customerAccessTokenCreate(input: {
-          email: "${email}",
-          password: "${tempPassword}"
-        }) {
-          customerAccessToken {
-            accessToken
-            expiresAt
-          }
-          customerUserErrors {
-            field
-            message
-          }
-        }
+    const accessTokenResponse = await axios.post(
+      `https://${shop}/admin/oauth/access_token`,
+      {
+        client_id: process.env.SHOPIFY_PARTNER_CLIENT_ID,
+        client_secret: process.env.SHOPIFY_PARTNER_CLIENT_SECRET,
+        code,
       }
-    `
-    let response = await client.request(loginQuery)
+    )
 
-    console.log('Shopify login response:', JSON.stringify(response, null, 2));
+    const { access_token } = accessTokenResponse.data
 
-    let errors = response?.customerAccessTokenCreate?.customerUserErrors
-
-    if (errors && errors.length > 0) {
-      console.error('Shopify Login Errors:', errors);
-      return res.status(400).json({ error: errors });
-    }
-
-    if (errors && errors.length > 0) {
-      const createQuery = `
-        mutation {
-          customerCreate(input: {
-            email: "${email}",
-            password: "${tempPassword}"
-          }) {
-            customer {
-              id
-              email
-            }
-            customerUserErrors {
-              field
-              message
-            }
-          }
-        }
-      `
-      const createResponse = await client.request(createQuery)
-      const createErrors =
-        createResponse?.data?.customerCreate?.customerUserErrors
-
-      if (createErrors && createErrors.length > 0) {
-        return res.status(400).json({ error: createErrors })
-      }
-
-      response = await client.request(loginQuery)
-      errors = response?.data?.customerAccessTokenCreate?.customerUserErrors
-
-      if (errors && errors.length > 0) {
-        return res.status(400).json({ error: errors })
-      }
-    }
-
-    const accessToken =
-      response.data.customerAccessTokenCreate.customerAccessToken.accessToken
-
-    res.cookie('_merchant_essential', accessToken, {
+    res.cookie('_merchant_essential', access_token, {
       httpOnly: true,
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 60,
-    })
-    res.cookie('_merchant_marketing', 'true', {
-      httpOnly: false,
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 60,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 30 * 1000,
+      sameSite: 'Strict',
     })
 
-    res.status(200).json({ message: 'OTP verified. Login successful.' })
+    res.redirect('http://localhost:3000/account')
   } catch (error) {
-    console.error('Error verifying OTP:', error.message)
-    res.status(500).json({ error: 'OTP verification failed.' })
+    console.error('Error during OAuth callback:', error)
+    res.status(500).json({ error: 'Failed to exchange code for access token' })
   }
 }
 
@@ -405,9 +305,8 @@ const logout = (req, res) => {
 module.exports = {
   getProducts,
   createCheckout,
-  requestOtp,
-  verifyOtp,
   getAccount,
+  getAccountCallback,
   addAddress,
   logout,
 }

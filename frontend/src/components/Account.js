@@ -9,9 +9,12 @@ const Account = () => {
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
-        const response = await axios.get('/api/account', {
-          withCredentials: true,
-        })
+        const response = await axios.get(
+          'http://localhost:8000/api/shopify/account',
+          {
+            withCredentials: true,
+          }
+        )
         setUser(response.data.user)
         setOrders(response.data.orders)
         setAddresses(response.data.addresses)
@@ -25,7 +28,11 @@ const Account = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/logout', {}, { withCredentials: true })
+      await axios.post(
+        'http://localhost:8000/api/shopify/logout',
+        {},
+        { withCredentials: true }
+      )
       window.location.href = '/'
     } catch (error) {
       console.error('Error logging out:', error)

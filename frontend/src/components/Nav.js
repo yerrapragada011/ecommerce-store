@@ -4,6 +4,9 @@ import { FaShoppingBag } from 'react-icons/fa'
 import './Nav.css'
 
 const Nav = ({ bagItemCount }) => {
+  const shopifyAuthUrl =
+    'https://s4ue4w-yb.myshopify.com/admin/oauth/authorize?client_id=d9ff297d331824d13021aacd494b02ca&scope=read_products,write_products,read_orders,write_orders,read_customers,write_customers,read_inventory,write_inventory,read_content,write_content,read_price_rules,write_price_rules,read_checkouts,write_checkouts,read_draft_orders,write_draft_orders,read_shopify_payments_accounts,read_shipping,write_shipping&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fshopify%2Faccount%2Fcallback&state=2sr5piwcocou2en2&grant_options[]=per-user'
+
   return (
     <nav className="nav">
       <Link to="/">
@@ -22,10 +25,10 @@ const Nav = ({ bagItemCount }) => {
           />
         </svg>
       </Link>
-      <div className='nav-links'>
-        <Link to="/login" className="login-button">
-          <span className="login-text">Login</span>
-        </Link>
+      <div className="nav-links">
+        <a href={shopifyAuthUrl} className="login-button">
+          Login
+        </a>
         <Link to="/bag" className="bag-button">
           <FaShoppingBag className="bag-icon" />
           <span className="bag-text">Bag</span>({bagItemCount})
