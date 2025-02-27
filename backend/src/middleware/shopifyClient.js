@@ -1,6 +1,7 @@
 require('dotenv').config()
 const { shopifyApi } = require('@shopify/shopify-api')
 const { NodeAdapter } = require('@shopify/shopify-api/adapters/node')
+const { GraphQLClient } = require('graphql-request')
 
 const shopify = shopifyApi({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -27,13 +28,48 @@ const getSession = (shop) => {
 }
 
 const getGraphqlClient = (shop) => {
-  const session = getSession(shop)
-  if (!session) {
-    throw new Error('Session not found')
+  const storefrontAccessToken = process.env.STOREFRONT_ACCESS_TOKEN
+
+  if (!storefrontAccessToken) {
+    console.error('Storefront access token is missing')
+    throw new Error('Storefront access token is missing')
   }
 
-  const graphqlClient = new shopify.clients.Graphql({ session })
+  const graphqlClient = new GraphQLClient(
+    `https://${shop}/api/2023-01/graphql.json`,
+    {
+      headers: {
+        'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
+      },
+    }
+  )
+
   return graphqlClient
 }
 
-module.exports = { shopify, getSession, getGraphqlClient }
+const getAdminGraphqlClient = (shop) => {
+  const adminAccessToken = process.env.SHOPIFY_ACCESS_TOKEN
+
+  if (!adminAccessToken) {
+    console.error('Admin access token is missing')
+    throw new Error('Admin access token is missing')
+  }
+
+  const graphqlClient = new GraphQLClient(
+    `https://${shop}/admin/api/2023-01/graphql.json`,
+    {
+      headers: {
+        'X-Shopify-Access-Token': adminAccessToken,
+      },
+    }
+  )
+
+  return graphqlClient
+}
+
+module.exports = {
+  shopify,
+  getSession,
+  getGraphqlClient,
+  getAdminGraphqlClient,
+}

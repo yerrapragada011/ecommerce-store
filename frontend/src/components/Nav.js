@@ -11,7 +11,7 @@ const Nav = ({ bagItemCount }) => {
           className="logo-image"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 400 400"
-          fill='none'
+          fill="none"
         >
           <path
             xmlns="http://www.w3.org/2000/svg"
@@ -22,10 +22,15 @@ const Nav = ({ bagItemCount }) => {
           />
         </svg>
       </Link>
-      <Link to="/bag" className="bag-button">
-        <FaShoppingBag className="bag-icon" />
-        <span className="bag-text">Bag</span>({bagItemCount})
-      </Link>
+      <div className='nav-links'>
+        <Link to="/login" className="login-button">
+          <span className="login-text">Login</span>
+        </Link>
+        <Link to="/bag" className="bag-button">
+          <FaShoppingBag className="bag-icon" />
+          <span className="bag-text">Bag</span>({bagItemCount})
+        </Link>
+      </div>
     </nav>
   )
 }

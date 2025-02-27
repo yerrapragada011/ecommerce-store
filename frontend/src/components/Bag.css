@@ -74,18 +74,20 @@
 }
 
 .checkout-button {
-  background-color: #007bff;
+  background-color: #333;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
   color: white;
-  font-size: 14px;
+  font-size: 24px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .checkout-button:hover {
-  background-color: #0056b3;
+  background-color: white;
+  color: #333;
+  border: 1px solid #333;
 }
 
 .checkout-container {
@@ -97,7 +99,7 @@
 .total-price {
   display: flex;
   gap: 10px;
-  font-size: 24px;
+  font-size: 40px;
   color: white;
   text-shadow: 4px 4px 9px rgba(0, 0, 0, 0.6);
 }
@@ -141,7 +143,10 @@
 }
 
 .remove-button:hover {
-  background-color: darkred;
+  background-color: white;
+  color: red;
+  border: 1px solid red;
+  transition: background-color 0.3s ease;
 }
 
 .modal-overlay {
@@ -177,7 +182,7 @@
 .modal-buttons button {
   padding: 0.5rem 1rem;
   border: none;
-  background-color: #007bff;
+  background-color: #333;
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
@@ -187,11 +192,15 @@
   background-color: red;
 }
 .modal-buttons .yes-button:hover {
-  background-color: darkred;
+  background-color: white;
+  color: red;
+  border: 1px solid red;
 }
 
 .modal-buttons button:hover {
-  background-color: #0056b3;
+  background-color: white;
+  color: #333;
+  border: 1px solid #333;
   transition: background-color 0.3s ease;
 }
 

@@ -13,7 +13,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     const initialImages = {}
     items.forEach((item) => {
       item.variants.forEach((variant) => {
-        initialImages[variant.node.id] = item.images?.[0]?.node?.src || ''
+        initialImages[variant.id] = item.images?.[0]?.src || ''
       })
     })
     setMainImages(initialImages)
@@ -21,11 +21,9 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
   const totalPrice = items.reduce((sum, item) => {
     const variant = item.variants.find((v) =>
-      v.node.selectedOptions.some(
-        (o) => o.name === 'Size' && o.value === item.size
-      )
+      v.selectedOptions.some((o) => o.name === 'Size' && o.value === item.size)
     )
-    const price = variant?.node.price ? parseFloat(variant.node.price) : 0
+    const price = variant?.price ? parseFloat(variant.price) : 0
     return sum + price * item.quantity
   }, 0)
 
@@ -33,12 +31,12 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
     try {
       const lineItems = items.map((item) => {
         const variant = item.variants.find((v) =>
-          v.node.selectedOptions.some(
+          v.selectedOptions.some(
             (o) => o.name === 'Size' && o.value === item.size
           )
         )
         return {
-          variant_id: variant.node.id,
+          variant_id: variant.id,
           quantity: item.quantity,
         }
       })
@@ -106,7 +104,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
   }
 
   const getOptionValue = (item, optionName) => {
-    const variant = item.variants?.[0]?.node
+    const variant = item.variants?.[0]
     const option = variant?.selectedOptions?.find(
       (opt) => opt.name.toLowerCase() === optionName.toLowerCase()
     )
@@ -122,18 +120,17 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
           <div className="bag-items">
             {items.map((item) => {
               const variant = item.variants.find((v) =>
-                v.node.selectedOptions.some(
+                v.selectedOptions.some(
                   (o) => o.name === 'Size' && o.value === item.size
                 )
               )
-              const variantId = variant?.node.id
+              const variantId = variant?.id
               const productImages = item.images || []
               const mainProductImage =
-                mainImages[variantId] || productImages[0]?.node?.src
+                mainImages[variantId] || productImages[0]?.url
 
               return (
                 <div key={`${variantId}-${item.size}`} className="bag-item">
-                  {console.log(`${variantId}-${item.size}`)}
                   <div className="bag-item-image">
                     <img
                       src={mainProductImage}
@@ -144,15 +141,13 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                       {productImages.map((image, idx) => (
                         <img
                           key={idx}
-                          src={image.node.src}
+                          src={image.url}
                           alt={`Thumbnail ${idx + 1}`}
                           className={`thumbnail ${
-                            image.node.src === mainImages[variantId]
-                              ? 'active'
-                              : ''
+                            image.url === mainImages[variantId] ? 'active' : ''
                           }`}
                           onClick={() =>
-                            handleThumbnailClick(image.node.src, variantId)
+                            handleThumbnailClick(image.url, variantId)
                           }
                         />
                       ))}
@@ -162,7 +157,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                     <div className="bag-item-details">
                       <h3>{item.title}</h3>
                       <p className="price">
-                        Price: ${item.variants?.[0]?.node.price || 'N/A'}
+                        Price: ${item.variants?.[0]?.price || 'N/A'}
                       </p>
                       <p>
                         Quantity:{' '}
@@ -189,12 +184,12 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
                         disabled={
                           item.quantity >=
                           (item.variants?.find((variant) =>
-                            variant.node.selectedOptions.some(
+                            variant.selectedOptions.some(
                               (option) =>
                                 option.name === 'Size' &&
                                 option.value === item.size
                             )
-                          )?.node?.inventoryQuantity || 10)
+                          ).inventoryQuantity || 10)
                         }
                       >
                         +

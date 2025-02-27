@@ -1,0 +1,94 @@
+.otp-login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #333;
+}
+
+.email-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 50px;
+}
+
+.otp-login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 50px;
+  border: 2px solid white;
+  color: white;
+  border-radius: 5px;
+  padding: 100px 200px;
+}
+
+.otp-login-form h2 {
+  font-size: 40px;
+}
+
+.otp-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.email-input {
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+    width: 300px;
+}
+
+.request-button {
+    padding: 10px 20px;
+    background-color: #333;
+    border: 1px solid white;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.request-button:hover {
+    background-color: white;
+    color: #333;
+}
+
+.otp-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 50px;
+}
+
+.otp-input {
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+    width: 300px;
+}
+
+.otp-button {
+    padding: 10px 20px;
+    background-color: #333;
+    border: 1px solid white;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.otp-input-form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 50px;
+    /* border: 2px solid white; */
+    color: white;
+    border-radius: 5px;
+    padding: 100px 200px;
+}
