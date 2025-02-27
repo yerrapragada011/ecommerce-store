@@ -16,6 +16,3 @@ button {
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px;
 }
 
-button:hover {
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 6px;
-}

@@ -215,6 +215,8 @@ const ProductList = ({ addToBag, bagItems }) => {
                         onClick={() =>
                           handleSizeChange(selectedProduct.id, 'Small')
                         }
+                        onMouseEnter={(e) => e.target.classList.add('hover')}
+                        onMouseLeave={(e) => e.target.classList.remove('hover')}
                       >
                         Small
                       </button>
@@ -227,6 +229,8 @@ const ProductList = ({ addToBag, bagItems }) => {
                         onClick={() =>
                           handleSizeChange(selectedProduct.id, 'Medium')
                         }
+                        onMouseEnter={(e) => e.target.classList.add('hover')}
+                        onMouseLeave={(e) => e.target.classList.remove('hover')}
                       >
                         Medium
                       </button>
@@ -239,6 +243,8 @@ const ProductList = ({ addToBag, bagItems }) => {
                         onClick={() =>
                           handleSizeChange(selectedProduct.id, 'Large')
                         }
+                        onMouseEnter={(e) => e.target.classList.add('hover')}
+                        onMouseLeave={(e) => e.target.classList.remove('hover')}
                       >
                         Large
                       </button>
