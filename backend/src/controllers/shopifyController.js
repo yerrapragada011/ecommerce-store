@@ -145,6 +145,8 @@ const getAccountCallback = async (req, res) => {
   try {
     const { code, shop } = req.query
 
+    console.log(code)
+
     if (!code || !shop) {
       return res
         .status(400)
