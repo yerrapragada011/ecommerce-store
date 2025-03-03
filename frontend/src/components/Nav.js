@@ -23,9 +23,6 @@ const Nav = ({ bagItemCount }) => {
         </svg>
       </Link>
       <div className="nav-links">
-        <a href="http://localhost:3000" className="login-button">
-          Login
-        </a>
         <Link to="/bag" className="bag-button">
           <FaShoppingBag className="bag-icon" />
           <span className="bag-text">Bag</span>({bagItemCount})

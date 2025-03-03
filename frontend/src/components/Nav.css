@@ -43,22 +43,6 @@
   margin-right: 50px;
 }
 
-.login-button {
-  font-size: 18px;
-  text-decoration: none;
-  color: white;
-  background-color: transparent;
-  border: 1px solid white;
-  padding: 8px 12px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.login-button:hover {
-  background-color: white;
-  color: #333;
-}
-
 @media (max-width: 768px) {
   .bag-text {
     display: none;
