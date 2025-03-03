@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const shopifyRoutes = require('./routes/shopifyRoutes')
-const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser')
 
 const app = express()
 

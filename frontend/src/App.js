@@ -8,7 +8,6 @@ import {
 import ProductList from './components/ProductList'
 import Bag from './components/Bag'
 import Nav from './components/Nav'
-import Account from './components/Account'
 import './App.css'
 
 const AppContent = () => {
@@ -89,7 +88,6 @@ const AppContent = () => {
             />
           }
         />
-        <Route path="/account" element={<Account />} />
       </Routes>
     </>
   )

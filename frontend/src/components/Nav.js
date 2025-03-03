@@ -4,8 +4,6 @@ import { FaShoppingBag } from 'react-icons/fa'
 import './Nav.css'
 
 const Nav = ({ bagItemCount }) => {
-  const shopifyAuthUrl = 'https://s4ue4w-yb.myshopify.com/account/login'
-
   return (
     <nav className="nav">
       <Link to="/">
@@ -25,7 +23,7 @@ const Nav = ({ bagItemCount }) => {
         </svg>
       </Link>
       <div className="nav-links">
-        <a href={shopifyAuthUrl} className="login-button">
+        <a href="http://localhost:3000" className="login-button">
           Login
         </a>
         <Link to="/bag" className="bag-button">

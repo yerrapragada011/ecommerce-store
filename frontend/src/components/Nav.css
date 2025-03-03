@@ -26,7 +26,6 @@
   align-items: center;
   gap: 5px;
   transition: background-color 0.3s ease;
-  margin-right: 50px;
 }
 
 .bag-button:hover {
