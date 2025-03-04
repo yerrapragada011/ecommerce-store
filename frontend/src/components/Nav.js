@@ -22,6 +22,13 @@ const Nav = ({ bagItemCount }) => {
           />
         </svg>
       </Link>
+      <div className="brand-text">
+        <Link to="/">
+          <a href='/'>
+            <h2>L. E. Fent</h2>
+          </a>
+        </Link>
+      </div>
       <div className="nav-links">
         <Link to="/bag" className="bag-button">
           <FaShoppingBag className="bag-icon" />

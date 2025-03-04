@@ -173,7 +173,7 @@ const ProductList = ({ addToBag, bagItems }) => {
             <div className="image-gallery">
               {mainImage && (
                 <img
-                  src={selectedProduct.images?.[0]?.url || 'default-image-url'}
+                  src={mainImage || 'default-image-url'}
                   alt={selectedProduct?.title}
                   className="modal-image"
                 />

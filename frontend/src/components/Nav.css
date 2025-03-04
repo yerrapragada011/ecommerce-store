@@ -1,3 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Ovo&display=swap');
+
+.brand-text {
+  font-family: 'Ovo', serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+}
+
+.brand-text a {
+  text-decoration: none;
+  color: white;
+}
+
 .nav {
   display: flex;
   justify-content: space-between;
