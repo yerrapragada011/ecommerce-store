@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ProductList from './components/ProductList'
 import Bag from './components/Bag'
 import Nav from './components/Nav'
+import Footer from './components/Footer'
 import './App.css'
 
 const AppContent = () => {
-  const location = useLocation()
   const [bagItems, setBagItems] = useState(() => {
     return JSON.parse(localStorage.getItem('bagItems')) || []
   })
@@ -72,7 +67,7 @@ const AppContent = () => {
 
   return (
     <>
-      {location.pathname !== '/login' && <Nav bagItemCount={bagItems.length} />}
+      <Nav bagItemCount={bagItems.length} />
       <Routes>
         <Route
           path="/"
@@ -89,6 +84,7 @@ const AppContent = () => {
           }
         />
       </Routes>
+      <Footer />
     </>
   )
 }
