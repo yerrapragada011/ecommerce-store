@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Bag.css'
 
-const Bag = ({ items, updateQuantity, removeFromBag }) => {
+const Bag = ({ items, updateQuantity, removeFromBag, clearBag }) => {
   const [removeModalOpen, setRemoveModalOpen] = useState(false)
   const [selectedVariantId, setSelectedVariantId] = useState(null)
   const [selectedSize, setSelectedSize] = useState(null)
@@ -54,6 +54,7 @@ const Bag = ({ items, updateQuantity, removeFromBag }) => {
 
       if (response.ok) {
         const data = await response.json()
+        clearBag()
         window.location.href = data.checkoutUrl
       } else {
         console.error('Failed to create checkout session')

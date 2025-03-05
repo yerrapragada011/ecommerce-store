@@ -65,6 +65,11 @@ const AppContent = () => {
     )
   }
 
+  const clearBag = () => {
+    setBagItems([])
+    localStorage.removeItem('bagItems') // Clear localStorage as well
+  }
+
   return (
     <>
       <Nav bagItemCount={bagItems.length} />
@@ -80,6 +85,7 @@ const AppContent = () => {
               items={bagItems}
               updateQuantity={updateQuantity}
               removeFromBag={removeFromBag}
+              clearBag={clearBag}
             />
           }
         />
